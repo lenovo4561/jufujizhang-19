@@ -45,7 +45,7 @@
 
       <div class="charts-container" if="{{hasData}}">
           <!-- Trend Chart -->
-          <div class="chart-section">
+          <div class="chart-section trend-section">
               <div class="section-header">
                   <text class="section-title">本月趋势</text>
                   <div class="switch-btn">
@@ -337,7 +337,7 @@ export default {
           height: 400,
           series: [{
               type: 'pie',
-              center: ['50%', '48%'],
+              center: ['50%', '45%'],
               radius: ['38%', '60%'],
               data: pieData,
               avoidLabelOverlap: true,
@@ -348,8 +348,8 @@ export default {
               },
               labelLine: { 
                 show: true,
-                length: 15,
-                length2: 15
+                length: 12,
+                length2: 8
               }
           }]
       });
@@ -446,6 +446,12 @@ export default {
     flex-direction: column;
 }
 
+.trend-section {
+  height: 520px;
+  flex-grow: 0;
+  flex-shrink: 0;
+}
+
 .section-header {
     flex-direction: row;
     justify-content: space-between;
@@ -495,18 +501,20 @@ export default {
     align-items: center;
     margin-bottom: 30px;
     padding: 30px 20px;
-    height: 540px;
+  height: 580px;
+  justify-content: center;
 }
 
 .pie-chart {
-    width: 100%;
-    height: 480px;
+  width: 690px;
+  height: 440px;
 }
 
 .pie-stack {
-    width: 100%;
-    height: 480px;
+  width: 690px;
+  height: 440px;
     position: relative;
+  align-self: center;
 }
 
 .pie-center-content {
@@ -619,14 +627,18 @@ export default {
   width: 100%;
   flex-direction: column;
   margin-bottom: 30px;
-  min-height: 280px;
+  height: 360px;
+  flex-grow: 0;
+  flex-shrink: 0;
 }
 
 .card-stack {
   border-radius: 20px;
   overflow: hidden;
   position: relative;
-  min-height: 280px;
+  height: 360px;
+  flex-grow: 0;
+  flex-shrink: 0;
 }
 
 .blur-layer {
