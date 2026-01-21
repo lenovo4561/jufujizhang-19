@@ -1,0 +1,136 @@
+<import name="shouye-page" src="./shouye.ux"></import>
+<import name="jizhang-page" src="./jizhang.ux"></import>
+<import name="tongji-page" src="./tongji.ux"></import>
+<import name="mine-page" src="./mine.ux"></import>
+
+<template>
+  <div class="main-page">
+    <tabs class="tabs" onchange="changeTab" index="{{currentIndex}}">
+      <tab-content class="tab-content">
+        <shouye-page id="shouye-page" is-active="{{currentIndex === 0}}"></shouye-page>
+        <jizhang-page id="jizhang-page"></jizhang-page>
+        <tongji-page id="tongji-page"></tongji-page>
+        <mine-page id="mine-page"></mine-page>
+      </tab-content>
+    </tabs>
+
+    <div class="tab-bar">
+      <div class="tab-item" onclick="clickTab(0)">
+        <image
+          class="tab-icon"
+          src="{{currentIndex === 0 ? '/assets/img/shouye-s.png' : '/assets/img/shouye-u.png'}}"
+        ></image>
+        <text
+          class="tab-text"
+          style="color: {{currentIndex === 0 ? '#FFFFFF' : '#999999'}}"
+          >首页</text
+        >
+      </div>
+      <div class="tab-item" onclick="clickTab(1)">
+        <image
+          class="tab-icon"
+          src="{{currentIndex === 1 ? '/assets/img/jizhang-s.png' : '/assets/img/jizhang-u.png'}}"
+        ></image>
+        <text
+          class="tab-text"
+          style="color: {{currentIndex === 1 ? '#FFFFFF' : '#999999'}}"
+          >记账</text
+        >
+      </div>
+      <div class="tab-item" onclick="clickTab(2)">
+        <image
+          class="tab-icon"
+          src="{{currentIndex === 2 ? '/assets/img/shuju-s.png' : '/assets/img/shuju-u.png'}}"
+        ></image>
+        <text
+          class="tab-text"
+          style="color: {{currentIndex === 2 ? '#FFFFFF' : '#999999'}}"
+          >统计</text
+        >
+      </div>
+      <div class="tab-item" onclick="clickTab(3)">
+        <image
+          class="tab-icon"
+          src="{{currentIndex === 3 ? '/assets/img/mine-s.png' : '/assets/img/mine-u.png'}}"
+        ></image>
+        <text
+          class="tab-text"
+          style="color: {{currentIndex === 3 ? '#FFFFFF' : '#999999'}}"
+          >我的</text
+        >
+      </div>
+    </div>
+  </div>
+</template>
+
+<script>
+import { initUser } from '../../helper/init.js'
+
+export default {
+  private: {
+    currentIndex: 0
+  },
+  onInit() {
+    console.log('Main page initialized')
+    // 进入应用时发送初始化请求
+    initUser()
+    this.$on('changeTab', this.handleChangeTab)
+  },
+  handleChangeTab(evt) {
+    if (evt.detail && typeof evt.detail.index === 'number') {
+      this.currentIndex = evt.detail.index
+    }
+  },
+  changeTab(e) {
+    this.currentIndex = e.index
+  },
+  clickTab(index) {
+    this.currentIndex = index
+  }
+}
+</script>
+
+<style>
+.main-page {
+  flex-direction: column;
+  background-color: #ffffff;
+  height: 100%;
+}
+.tabs {
+  flex: 1;
+}
+.tab-content {
+  flex: 1;
+}
+.tab-bar {
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  right: 20px;
+  height: 150px;
+  background-color: #1A1A1A;
+  border-radius: 75px;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-around;
+  padding-bottom: 0;
+  z-index: 1000;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
+}
+.tab-item {
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  height: 100%;
+}
+.tab-icon {
+  width: 70px;
+  height: 70px;
+  object-fit: contain;
+  margin-bottom: 8px;
+}
+.tab-text {
+  font-size: 24px;
+}
+</style>

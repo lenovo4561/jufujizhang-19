@@ -1,0 +1,168 @@
+<template>
+  <div class="page">
+    <!-- 顶部背景与个人信息 -->
+    <stack class="header-container">
+      <image class="header-bg" src="/assets/img/wodebg.png"></image>
+      <div class="user-info">
+        <image class="avatar" src="/assets/img/tx.png"></image>
+        <text class="username">郑文锦</text>
+      </div>
+    </stack>
+
+    <!-- 其他服务卡片 -->
+    <div class="services-card">
+      <text class="card-title">其他服务</text>
+      
+      <!-- 用户协议 -->
+      <div class="service-item" onclick="openAgreement">
+        <div class="item-left">
+          <image class="item-icon" src="/assets/img/yonghu.png"></image>
+          <text class="item-text">用户协议</text>
+        </div>
+        <image class="arrow-icon" src="/assets/img/jiantou.png"></image>
+      </div>
+      
+      <div class="divider"></div>
+
+      <!-- 隐私政策 -->
+      <div class="service-item" onclick="openPrivacy">
+        <div class="item-left">
+          <image class="item-icon" src="/assets/img/yinsizhengce-1.png"></image>
+          <text class="item-text">隐私政策</text>
+        </div>
+        <image class="arrow-icon" src="/assets/img/jiantou.png"></image>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script>
+import router from '@system.router'
+
+export default {
+  data: {
+    agreementUrl: 'https://api.51dsp.cn/index/agreement.do?pn=com.jvfujizhangcl.jfjz',
+    privacyUrl: 'https://api.51dsp.cn/index/privacy.do?pn=com.jvfujizhangcl.jfjz'
+  },
+  onInit() {
+    console.log('User page initialized')
+  },
+  openAgreement() {
+    router.push({
+      uri: 'pages/Web',
+      params: {
+        url: this.agreementUrl,
+        title: '用户协议'
+      }
+    })
+  },
+  openPrivacy() {
+    router.push({
+      uri: 'pages/Web',
+      params: {
+        url: this.privacyUrl,
+        title: '隐私政策'
+      }
+    })
+  }
+}
+</script>
+
+<style>
+.page {
+  flex-direction: column;
+  background-color: #F5F5F5;
+  height: 100%;
+}
+
+.header-container {
+  height: 750px;
+  width: 100%;
+}
+
+.header-bg {
+  width: 100%;
+  height: 100%;
+  resize-mode: stretch;
+}
+
+.user-info {
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  padding-bottom: 50px; /* 稍微向上调整 */
+}
+
+.avatar {
+  width: 200px;
+  height: 200px;
+  border-radius: 80px;
+  object-fit: cover;
+}
+
+.username {
+  font-size: 36px;
+  color: #000000;
+  font-weight: bold;
+}
+
+.services-card {
+  width: 1000px;
+  margin-left: 40px;
+  margin-top: -160px; /* 卡片上浮，或者根据实际调整 */
+  background-color: #ffffff;
+  border-radius: 20px;
+  padding: 30px;
+  flex-direction: column;
+}
+
+.card-title {
+  font-size: 34px;
+  font-weight: bold;
+  color: #333333;
+  margin-bottom: 30px;
+  padding-left: 10px;
+}
+
+.service-item {
+  flex-direction: row;
+  height: 110px;
+  align-items: center;
+  justify-content: space-between;
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+.item-left {
+  flex-direction: row;
+  align-items: center;
+}
+
+.item-icon {
+  width: 70px;
+  height: 70px;
+  margin-right: 25px;
+  resize-mode: contain;
+}
+
+.item-text {
+  font-size: 32px;
+  color: #333333;
+}
+
+.arrow-icon {
+  width: 60px;
+  height: 60px;
+  opacity: 0.6;
+  resize-mode: contain;
+}
+
+.divider {
+  height: 1px;
+  background-color: #f0f0f0;
+  margin-left: 85px; /* 对齐图标后的文字 */
+  width: 100%;
+}
+</style>
