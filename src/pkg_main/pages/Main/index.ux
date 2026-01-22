@@ -7,9 +7,15 @@
   <div class="main-page">
     <tabs class="tabs" onchange="changeTab" index="{{currentIndex}}">
       <tab-content class="tab-content">
-        <shouye-page id="shouye-page" is-active="{{currentIndex === 0}}"></shouye-page>
+        <shouye-page
+          id="shouye-page"
+          is-active="{{currentIndex === 0}}"
+        ></shouye-page>
         <jizhang-page id="jizhang-page"></jizhang-page>
-        <tongji-page id="tongji-page" is-active="{{currentIndex === 2}}"></tongji-page>
+        <tongji-page
+          id="tongji-page"
+          is-active="{{currentIndex === 2}}"
+        ></tongji-page>
         <mine-page id="mine-page"></mine-page>
       </tab-content>
     </tabs>
@@ -76,6 +82,23 @@ export default {
     initUser()
     this.$on('changeTab', this.handleChangeTab)
   },
+  onShow() {
+    // 当从详情页返回时，刷新当前页面的数据
+    if (this.currentIndex === 0) {
+      // 刷新首页
+      const shouyePage = this.$child('shouye-page')
+      if (shouyePage && shouyePage.loadMonthData && shouyePage.loadData) {
+        shouyePage.loadMonthData()
+        shouyePage.loadData()
+      }
+    } else if (this.currentIndex === 2) {
+      // 刷新统计页
+      const tongjiPage = this.$child('tongji-page')
+      if (tongjiPage && tongjiPage.refreshData) {
+        tongjiPage.refreshData()
+      }
+    }
+  },
   handleChangeTab(evt) {
     if (evt.detail && typeof evt.detail.index === 'number') {
       this.currentIndex = evt.detail.index
@@ -104,12 +127,12 @@ export default {
 }
 .tab-bar {
   position: fixed;
-  bottom: 5px;
-  left: 5px;
-  right: 5px;
-  height: 35px;
-  background-color: #1A1A1A;
-  border-radius: 17px;
+  bottom: 8px;
+  left: 8px;
+  right: 8px;
+  height: 48px;
+  background-color: #1a1a1a;
+  border-radius: 24px;
   flex-direction: row;
   align-items: center;
   justify-content: space-around;
@@ -125,12 +148,12 @@ export default {
   height: 100%;
 }
 .tab-icon {
-  width: 16px;
-  height: 16px;
+  width: 20px;
+  height: 20px;
   object-fit: contain;
   margin-bottom: 2px;
 }
 .tab-text {
-  font-size: 6px;
+  font-size: 8px;
 }
 </style>

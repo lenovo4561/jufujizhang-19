@@ -1,8 +1,8 @@
 <template>
   <div class="splash-container">
     <!-- 背景图 -->
-    <image class="bg-image" src="/pkg_main/assets/img/shangdian-bg.png"></image>
-    
+    <image class="bg-image" src="/pkg_main/assets/img/loading-bg.png"></image>
+
     <!-- Logo容器 -->
     <div class="logo-container">
       <image class="logo" src="/pkg_main/assets/img/loading-icon-1.png"></image>
@@ -19,7 +19,9 @@
             <a class="link" onclick="openPrivacy">《隐私政策》</a>
             <span>及</span>
             <a class="link" onclick="openAgreement">《用户协议》</a>
-            <span>，我们将严格遵守您同意的各项条款使用您的信息，以便为您提供更好的服务。点击"同意"意味着您自愿遵守《隐私政策》，我们将严格保护您的个人信息，确保信息安全。</span>
+            <span
+              >，我们将严格遵守您同意的各项条款使用您的信息，以便为您提供更好的服务。点击"同意"意味着您自愿遵守《隐私政策》，我们将严格保护您的个人信息，确保信息安全。</span
+            >
           </text>
         </div>
         <div class="modal_buttons">
@@ -106,7 +108,8 @@ export default {
     router.push({
       uri: '/pkg_main/pages/Web',
       params: {
-        url: 'https://api.51dsp.cn/index/agreement.do?pn=com.jvfujizhangcl.jfjz',
+        url:
+          'https://api.51dsp.cn/index/agreement.do?pn=com.jvfujizhangcl.jfjz',
         title: '用户协议'
       }
     })
@@ -155,21 +158,21 @@ export default {
   width: 100%;
   height: 100%;
   position: absolute;
-  top: 0;
+  top: -80px;
   left: 0;
   padding-bottom: 46px;
 }
 
 .logo {
-  width: 46px;
-  height: 46px;
-  margin-bottom: 7px;
+  width: 65px;
+  height: 65px;
+  margin-bottom: 9px;
   object-fit: contain;
 }
 
 .app-name-img {
-  width: 51px;
-  height: 14px;
+  width: 56px;
+  height: 13px;
   object-fit: contain;
 }
 

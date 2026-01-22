@@ -12,25 +12,37 @@
     <!-- 其他服务卡片 -->
     <div class="services-card">
       <text class="card-title">其他服务</text>
-      
+
       <!-- 用户协议 -->
       <div class="service-item" onclick="openAgreement">
         <div class="item-left">
-          <image class="item-icon" src="/pkg_main/assets/img/yonghu.png"></image>
+          <image
+            class="item-icon"
+            src="/pkg_main/assets/img/yonghu.png"
+          ></image>
           <text class="item-text">用户协议</text>
         </div>
-        <image class="arrow-icon" src="/pkg_main/assets/img/jiantou.png"></image>
+        <image
+          class="arrow-icon"
+          src="/pkg_main/assets/img/jiantou.png"
+        ></image>
       </div>
-      
+
       <div class="divider"></div>
 
       <!-- 隐私政策 -->
       <div class="service-item" onclick="openPrivacy">
         <div class="item-left">
-          <image class="item-icon" src="/pkg_main/assets/img/yinsizhengce-1.png"></image>
+          <image
+            class="item-icon"
+            src="/pkg_main/assets/img/yinsizhengce-1.png"
+          ></image>
           <text class="item-text">隐私政策</text>
         </div>
-        <image class="arrow-icon" src="/pkg_main/assets/img/jiantou.png"></image>
+        <image
+          class="arrow-icon"
+          src="/pkg_main/assets/img/jiantou.png"
+        ></image>
       </div>
     </div>
   </div>
@@ -41,8 +53,10 @@ import router from '@system.router'
 
 export default {
   data: {
-    agreementUrl: 'https://api.51dsp.cn/index/agreement.do?pn=com.jvfujizhangcl.jfjz',
-    privacyUrl: 'https://api.51dsp.cn/index/privacy.do?pn=com.jvfujizhangcl.jfjz'
+    agreementUrl:
+      'https://api.51dsp.cn/index/agreement.do?pn=com.jvfujizhangcl.jfjz',
+    privacyUrl:
+      'https://api.51dsp.cn/index/privacy.do?pn=com.jvfujizhangcl.jfjz'
   },
   onInit() {
     console.log('User page initialized')
@@ -71,12 +85,12 @@ export default {
 <style>
 .page {
   flex-direction: column;
-  background-color: #F5F5F5;
+  background-color: #f5f5f5;
   height: 100%;
 }
 
 .header-container {
-  height: 174px;
+  height: 220px;
   width: 100%;
 }
 
@@ -96,39 +110,40 @@ export default {
 }
 
 .avatar {
-  width: 46px;
-  height: 46px;
-  border-radius: 19px;
+  width: 60px;
+  height: 60px;
+  border-radius: 30px;
   object-fit: cover;
 }
 
 .username {
-  font-size: 8px;
+  font-size: 11px;
   color: #000000;
   font-weight: bold;
+  margin-top: 8px;
 }
 
 .services-card {
-  width: 231px;
   margin-left: 9px;
-  margin-top: -37px;
+  margin-right: 9px;
+  margin-top: -50px;
   background-color: #ffffff;
-  border-radius: 5px;
-  padding: 7px;
+  border-radius: 8px;
+  padding: 12px;
   flex-direction: column;
 }
 
 .card-title {
-  font-size: 8px;
+  font-size: 11px;
   font-weight: bold;
   color: #333333;
-  margin-bottom: 7px;
+  margin-bottom: 10px;
   padding-left: 2px;
 }
 
 .service-item {
   flex-direction: row;
-  height: 25px;
+  height: 35px;
   align-items: center;
   justify-content: space-between;
   padding-left: 2px;
@@ -141,28 +156,28 @@ export default {
 }
 
 .item-icon {
-  width: 16px;
-  height: 16px;
-  margin-right: 6px;
+  width: 20px;
+  height: 20px;
+  margin-right: 8px;
   resize-mode: contain;
 }
 
 .item-text {
-  font-size: 7px;
+  font-size: 10px;
   color: #333333;
 }
 
 .arrow-icon {
-  width: 18px;
-  height: 18px;
-  opacity: 0.8;
+  width: 35px;
+  height: 35px;
+  margin-left: 20px;
   resize-mode: contain;
 }
 
 .divider {
   height: 1px;
   background-color: #f0f0f0;
-  width: 205px;
+  width: 256px;
   align-self: center;
 }
 </style>

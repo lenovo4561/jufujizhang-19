@@ -2,55 +2,62 @@
   <div class="detail-page">
     <!-- Header with Background -->
     <div class="header-bg-wrapper">
-      <image class="header-bg" src="/pkg_main/assets/img/jizhang-bg.png"></image>
+      <image
+        class="header-bg"
+        src="/pkg_main/assets/img/jizhang-bg.png"
+      ></image>
       <div class="header-content">
         <div class="nav-bar">
-           <div class="back-btn" onclick="goBack">
-               <image class="back-icon" src="/pkg_main/assets/img/zuo.png"></image>
-           </div>
-           <text class="page-title">账单详情</text>
-           <div class="placeholder"></div>
+          <div class="back-btn" onclick="goBack">
+            <image class="back-icon" src="/pkg_main/assets/img/zuo.png"></image>
+          </div>
+          <text class="page-title">账单详情</text>
+          <div class="placeholder"></div>
         </div>
-        
+
         <!-- Icon Circle -->
         <div class="icon-section">
-             <div class="icon-circle">
-                 <image class="category-icon" src="{{record.categoryIcon || (record.type==='income'?'/pkg_main/assets/shouru_icon/qita.png':'/pkg_main/assets/zhihcu_icon/qitaxiaofei2.png')}}"></image>
-             </div>
-             <text class="category-name">{{record.category}}</text>
+          <div class="icon-circle">
+            <image
+              class="category-icon"
+              src="{{record.categoryIcon || (record.type==='income'?'/pkg_main/assets/shouru_icon/qita.png':'/pkg_main/assets/zhihcu_icon/qitaxiaofei2.png')}}"
+            ></image>
+          </div>
+          <text class="category-name">{{ record.category }}</text>
         </div>
       </div>
     </div>
 
     <!-- Details Card -->
     <div class="card-container">
-        <div class="detail-row">
-            <text class="row-label">类型</text>
-            <text class="row-value">{{record.type === 'income' ? '收入' : '支出'}}</text>
+      <div class="detail-row">
+        <text class="row-label">类型</text>
+        <text class="row-value">{{
+          record.type === 'income' ? '收入' : '支出'
+        }}</text>
+      </div>
+      <div class="detail-row">
+        <text class="row-label">金额</text>
+        <text class="row-value amount-text">¥{{ record.amount }}</text>
+      </div>
+      <div class="detail-row">
+        <text class="row-label">日期</text>
+        <text class="row-value">{{ record.dateStr }}</text>
+      </div>
+      <div class="detail-col">
+        <text class="row-label note-label">备注</text>
+        <div class="note-box">
+          <text class="note-text">{{ record.note || '暂无备注' }}</text>
         </div>
-         <div class="detail-row">
-            <text class="row-label">金额</text>
-            <text class="row-value amount-text">¥{{record.amount}}</text>
-        </div>
-         <div class="detail-row">
-            <text class="row-label">日期</text>
-            <text class="row-value">{{record.dateStr}}</text>
-        </div>
-        <div class="detail-col">
-            <text class="row-label note-label">备注</text>
-            <div class="note-box">
-                <text class="note-text">{{record.note || '暂无备注'}}</text>
-            </div>
-        </div>
+      </div>
     </div>
 
     <!-- Delete Button -->
     <div class="footer">
-        <div class="delete-btn" onclick="deleteRecord">
-            <text class="delete-text">删除账单</text>
-        </div>
+      <div class="delete-btn" onclick="deleteRecord">
+        <text class="delete-text">删除账单</text>
+      </div>
     </div>
-
   </div>
 </template>
 
@@ -63,93 +70,98 @@ export default {
   data: {
     recordStr: '',
     record: {
-        category: '加载中...',
-        type: 'expense',
-        amount: '0.00',
-        dateStr: '',
-        note: ''
+      category: '加载中...',
+      type: 'expense',
+      amount: '0.00',
+      dateStr: '',
+      note: ''
     }
   },
   onInit() {
-      console.info('Detail Page Init. recordStr:', this.recordStr);
-      if(this.recordStr) {
+    console.info('Detail Page Init. recordStr:', this.recordStr)
+    if (this.recordStr) {
+      try {
+        // Ensure it's a string
+        let str = this.recordStr
+        // Decode if URI encoded (sometimes happens with router params depending on platform impl)
+        if (str.indexOf('%') > -1) {
           try {
-              // Ensure it's a string
-              let str = this.recordStr;
-              // Decode if URI encoded (sometimes happens with router params depending on platform impl)
-              if (str.indexOf('%') > -1) {
-                  try {
-                       str = decodeURIComponent(str);
-                  } catch(err) {} 
-              }
-              
-              const data = JSON.parse(str);
-              this.record = data;
-              console.info('Record parsed successfully', this.record);
-          } catch(e) {
-              console.error('JSON Parse Error in Detail:', e);
-              prompt.showToast({ message: '数据解析失败' });
-          }
-      } else {
-          console.error('No recordStr received');
+            str = decodeURIComponent(str)
+          } catch (err) {}
+        }
+
+        const data = JSON.parse(str)
+        this.record = data
+        console.info('Record parsed successfully', this.record)
+      } catch (e) {
+        console.error('JSON Parse Error in Detail:', e)
+        prompt.showToast({ message: '数据解析失败' })
       }
+    } else {
+      console.error('No recordStr received')
+    }
   },
   goBack() {
-    router.back();
+    router.back()
   },
   deleteRecord() {
-      prompt.showDialog({
-        title: '提示',
-        message: '确定要删除这条账单吗？',
-        buttons: [
-            { text: '取消', color: '#666666' },
-            { text: '删除', color: '#ff0000' }
-        ],
-        success: (data) => {
-            if (data.index === 1) {
-                this.performDelete();
-            }
+    prompt.showDialog({
+      title: '提示',
+      message: '确定要删除这条账单吗？',
+      buttons: [
+        { text: '取消', color: '#666666' },
+        { text: '删除', color: '#ff0000' }
+      ],
+      success: data => {
+        if (data.index === 1) {
+          this.performDelete()
         }
-      })
+      }
+    })
   },
   performDelete() {
-      storage.get({
+    storage.get({
+      key: 'accounting_records',
+      success: data => {
+        let list = []
+        if (data) {
+          try {
+            list = JSON.parse(data)
+          } catch (e) {
+            console.error('Parse error:', e)
+          }
+        }
+
+        // Filter out the record by matching timestamp
+        const newList = list.filter(r => {
+          return r.date !== this.record.date
+        })
+
+        console.info(
+          'Deleting record. Before:',
+          list.length,
+          'After:',
+          newList.length
+        )
+
+        storage.set({
           key: 'accounting_records',
-          success: (data) => {
-              let list = [];
-              if (data) {
-                  try {
-                      list = JSON.parse(data);
-                  } catch(e){
-                      console.error('Parse error:', e);
-                  }
-              }
-              
-              // Filter out the record by matching timestamp
-              const newList = list.filter(r => {
-                  return r.date !== this.record.date; 
-              });
-              
-              console.info('Deleting record. Before:', list.length, 'After:', newList.length);
-              
-              storage.set({
-                  key: 'accounting_records',
-                  value: JSON.stringify(newList),
-                  success: () => {
-                      prompt.showToast({ message: '删除成功' });
-                      router.back();
-                  },
-                  fail: (data, code) => {
-                      console.error('Storage set failed:', code);
-                      prompt.showToast({ message: '删除失败，请重试' });
-                  }
-              })
+          value: JSON.stringify(newList),
+          success: () => {
+            prompt.showToast({ message: '删除成功' })
+            router.back()
           },
           fail: (data, code) => {
-              console.error('Storage get failed:', code);
-              prompt.showToast({ message: '获取数据失败' });
+            console.error('Storage set failed:', code)
+            prompt.showToast({ message: '删除失败，请重试' })
           }
-      })
+        })
+      },
+      fail: (data, code) => {
+        console.error('Storage get failed:', code)
+        prompt.showToast({ message: '获取数据失败' })
+      }
+    })
   }
 }
 </script>
@@ -163,161 +175,161 @@ export default {
 
 .header-bg-wrapper {
   flex-direction: column;
-  height: 174px;
+  height: 220px;
   position: relative;
   align-items: center;
 }
 
 .header-bg {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 174px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 220px;
 }
 
 .header-content {
-    flex-direction: column;
-    width: 100%;
-    align-items: center;
-    position: relative;
-    z-index: 1;
+  flex-direction: column;
+  width: 100%;
+  align-items: center;
+  position: relative;
+  z-index: 1;
 }
 
 .nav-bar {
-    width: 100%;
-    height: 23px;
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0 7px;
-    margin-top: 19px;
+  width: 100%;
+  height: 30px;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 10px;
+  margin-top: 25px;
 }
 
 .back-btn {
-    width: 14px;
-    height: 14px;
-    justify-content: center;
-    align-items: flex-start;
+  width: 20px;
+  height: 20px;
+  justify-content: center;
+  align-items: flex-start;
 }
 
 .back-icon {
-    width: 9px;
-    height: 9px;
-    object-fit: contain;
+  width: 14px;
+  height: 14px;
+  object-fit: contain;
 }
 
 .page-title {
-    font-size: 8px;
-    color: #333333;
-    font-weight: bold;
+  font-size: 12px;
+  color: #333333;
+  font-weight: bold;
 }
 
 .placeholder {
-    width: 14px;
+  width: 20px;
 }
 
 .icon-section {
-    flex-direction: column;
-    align-items: center;
-    margin-top: 14px;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 20px;
 }
 
 .icon-circle {
-    width: 32px;
-    height: 32px;
-    justify-content: center;
-    align-items: center;
-    margin-bottom: 5px;
+  width: 50px;
+  height: 50px;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 8px;
 }
 
 .category-icon {
-    width: 28px;
-    height: 28px;
-    object-fit: contain;
+  width: 45px;
+  height: 45px;
+  object-fit: contain;
 }
 
 .category-name {
-    font-size: 8px;
-    color: #333333;
-    font-weight: bold;
+  font-size: 12px;
+  color: #333333;
+  font-weight: bold;
 }
 
 /* Card */
 .card-container {
-    flex-direction: column;
-    background-color: #ffffff;
-    margin: 0 7px;
-    margin-top: 9px;
-    border-radius: 5px;
-    padding: 7px;
+  flex-direction: column;
+  background-color: #ffffff;
+  margin: 0 10px;
+  margin-top: 15px;
+  border-radius: 8px;
+  padding: 12px;
 }
 
 .detail-row {
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
-    height: 23px;
-    border-bottom-width: 1px;
-    border-bottom-color: #f0f0f0;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  height: 35px;
+  border-bottom-width: 1px;
+  border-bottom-color: #f0f0f0;
 }
 
 .row-label {
-    font-size: 7px;
-    color: #666666;
+  font-size: 11px;
+  color: #666666;
 }
 
 .row-value {
-    font-size: 7px;
-    color: #333333;
-    font-weight: bold;
+  font-size: 11px;
+  color: #333333;
+  font-weight: bold;
 }
 
 .amount-text {
-    font-size: 7px;
+  font-size: 13px;
 }
 
 .detail-col {
-    flex-direction: column;
-    margin-top: 7px;
+  flex-direction: column;
+  margin-top: 10px;
 }
 
 .note-label {
-    margin-bottom: 5px;
+  margin-bottom: 8px;
 }
 
 .note-box {
-    background-color: #f7f8fa;
-    border-radius: 2px;
-    padding: 5px;
-    min-height: 35px;
+  background-color: #f7f8fa;
+  border-radius: 5px;
+  padding: 10px;
+  min-height: 50px;
 }
 
 .note-text {
-    font-size: 6px;
-    color: #999999;
+  font-size: 10px;
+  color: #999999;
 }
 
 /* Footer */
 .footer {
-    position: fixed;
-    bottom: 12px;
-    width: 100%;
-    padding: 0 9px;
+  position: fixed;
+  bottom: 20px;
+  width: 100%;
+  padding: 0 10px;
 }
 
 .delete-btn {
-    width: 100%;
-    height: 23px;
-    background-color: #FF7064;
-    border-radius: 12px;
-    justify-content: center;
-    align-items: center;
+  width: 100%;
+  height: 35px;
+  background-color: #ff7064;
+  border-radius: 18px;
+  justify-content: center;
+  align-items: center;
 }
 
 .delete-text {
-    color: #ffffff;
-    font-size: 8px;
-    font-weight: bold;
+  color: #ffffff;
+  font-size: 12px;
+  font-weight: bold;
 }
 </style>

@@ -1,119 +1,165 @@
 <template>
   <div class="shouye-page">
-  <list class="shouye-list">
-    <!-- 头部内容区（包含背景） -->
-    <list-item type="header-content" class="header-item">
-      <div class="header-wrapper">
-        <!-- 顶部背景 -->
-        <div class="bg-container">
-           <image class="bg-img" src="/pkg_main/assets/img/shouyedingbg.png"></image>
-        </div>
-        
-        <div class="header-content">
-      <!-- 年月选择 -->
-      <div class="date-selector">
-        <image class="arrow-icon" src="/pkg_main/assets/img/zuo.png" onclick="prevMonth"></image>
-        <div class="date-text-wrapper">
-             <text class="date-text">{{currentYear}}-{{currentMonth < 10 ? '0' + currentMonth : currentMonth}}</text>
-             <image class="arrow-small" src="/pkg_main/assets/img/jiantou.png"></image>
-        </div>
-        <image class="arrow-icon" src="/pkg_main/assets/img/you.png" onclick="nextMonth"></image>
-      </div>
-      
-      <!-- 日历卡片 -->
-      <div class="calendar-stack">
-        <!-- 模糊背景层 -->
-        <div class="blur-layer"></div>
-        <!-- 白色渐变遮罩 -->
-        <div class="frost-overlay"></div>
-        <!-- 日历内容 -->
-        <div class="calendar-card">
-          <!-- 星期头 -->
-          <div class="week-header">
-           <text class="week-item red-text">日</text>
-           <text class="week-item">一</text>
-           <text class="week-item">二</text>
-           <text class="week-item">三</text>
-           <text class="week-item">四</text>
-           <text class="week-item">五</text>
-           <text class="week-item">六</text>
-        </div>
-        
-        <!-- 日历网格 -->
-        <div class="days-grid">
-           <block for="day in days">
-             <div class="day-wrapper" onclick="selectDay(day)">
-                <div class="day-content {{day.bgClass}}">
-                   <text class="day-num {{day.isToday ? 'white-text' : 'black-text'}}">{{day.num}}</text>
-                   <text class="today-tag" if="{{day.isToday}}">今</text>
+    <list class="shouye-list">
+      <!-- 头部内容区（包含背景） -->
+      <list-item type="header-content" class="header-item">
+        <div class="header-wrapper">
+          <!-- 顶部背景 -->
+          <div class="bg-container">
+            <image
+              class="bg-img"
+              src="/pkg_main/assets/img/shouyedingbg.png"
+            ></image>
+          </div>
+
+          <div class="header-content">
+            <!-- 年月选择 -->
+            <div class="date-selector">
+              <image
+                class="arrow-icon"
+                src="/pkg_main/assets/img/zuo.png"
+                onclick="prevMonth"
+              ></image>
+              <div class="date-text-wrapper">
+                <text class="date-text"
+                  >{{ currentYear }}-{{
+                    currentMonth < 10 ? '0' + currentMonth : currentMonth
+                  }}</text
+                >
+                <image
+                  class="arrow-small"
+                  src="/pkg_main/assets/img/jiantou.png"
+                ></image>
+              </div>
+              <image
+                class="arrow-icon"
+                src="/pkg_main/assets/img/you.png"
+                onclick="nextMonth"
+              ></image>
+            </div>
+
+            <!-- 日历卡片 -->
+            <div class="calendar-stack">
+              <!-- 模糊背景层 -->
+              <div class="blur-layer"></div>
+              <!-- 白色渐变遮罩 -->
+              <div class="frost-overlay"></div>
+              <!-- 日历内容 -->
+              <div class="calendar-card">
+                <!-- 星期头 -->
+                <div class="week-header">
+                  <text class="week-item red-text">日</text>
+                  <text class="week-item">一</text>
+                  <text class="week-item">二</text>
+                  <text class="week-item">三</text>
+                  <text class="week-item">四</text>
+                  <text class="week-item">五</text>
+                  <text class="week-item">六</text>
                 </div>
-                <!-- 收支数据 -->
-                <div class="day-indicators">
-                    <text class="indicator income" if="{{day.income}}">{{day.income}}</text>
-                    <text class="indicator expense" if="{{day.expense}}">{{day.expense}}</text>
+
+                <!-- 日历网格 -->
+                <div class="days-grid">
+                  <block for="day in days">
+                    <div class="day-wrapper" onclick="selectDay(day)">
+                      <div
+                        class="day-content {{day.isSelected ? 'selected-day-bg' : day.bgClass}}"
+                      >
+                        <text
+                          class="day-num {{day.isSelected ? 'white-text' : 'black-text'}}"
+                          >{{ day.num }}</text
+                        >
+                        <text
+                          class="today-tag"
+                          if="{{day.isToday && !day.isSelected}}"
+                          >今</text
+                        >
+                      </div>
+                      <!-- 收支数据 -->
+                      <div class="day-indicators">
+                        <text class="indicator income" if="{{day.income}}">{{
+                          day.income
+                        }}</text>
+                        <text class="indicator expense" if="{{day.expense}}">{{
+                          day.expense
+                        }}</text>
+                      </div>
+                    </div>
+                  </block>
                 </div>
-             </div>
-           </block>
+              </div>
+            </div>
           </div>
         </div>
-      </div>
-    </div>
-    </div>
-    </list-item>
+      </list-item>
 
-    <!-- 底部详情区 -->
-    <list-item type="details-section" class="details-item">
-      <div class="details-section">
-       <div class="detail-header">
-         <text class="detail-date-title">{{currentMonth < 10 ? '0' + currentMonth : currentMonth}}.{{selectedDayNum < 10 ? '0' + selectedDayNum : selectedDayNum}}</text>
-         <div class="detail-summary">
-           <text class="summary-label">收入: </text>
-           <text class="summary-val income-val">¥{{dayIncome}}</text>
-           <text class="summary-label space">支出: </text>
-           <text class="summary-val expense-val">¥{{dayExpense}}</text>
-         </div>
-       </div>
+      <!-- 底部详情区 -->
+      <list-item type="details-section" class="details-item">
+        <div class="details-section">
+          <div class="detail-header">
+            <text class="detail-date-title"
+              >{{ currentMonth < 10 ? '0' + currentMonth : currentMonth }}.{{
+                selectedDayNum < 10 ? '0' + selectedDayNum : selectedDayNum
+              }}</text
+            >
+            <div class="detail-summary">
+              <text class="summary-label">收入: </text>
+              <text class="summary-val income-val">¥{{ dayIncome }}</text>
+              <text class="summary-label space">支出: </text>
+              <text class="summary-val expense-val">¥{{ dayExpense }}</text>
+            </div>
+          </div>
 
-       <!-- 列表 -->
-       <div class="record-list" if="{{dayRecords.length > 0}}">
-          <block for="{{dayRecords}}">
-             <div class="record-item" onclick="toDetail($item)">
-                 <!-- Icon -->
-                 <div class="icon-wrapper">
-                    <image class="item-icon" src="{{$item.categoryIcon}}" if="{{$item.categoryIcon}}"></image>
-                    <image class="item-icon" src="/pkg_main/assets/zhihcu_icon/qitaxiaofei2.png" else></image>
-                 </div>
-                 <!-- Middle -->
-                 <div class="item-info">
-                    <text class="item-title">{{$item.category}}</text>
-                    <text class="item-note">备注: {{$item.note || '无'}}</text>
-                 </div>
-                 <!-- Right -->
-                 <div class="item-amount-wrapper">
-                    <text class="item-amount {{$item.type === 'income' ? 'val-income' : 'val-expense'}}">
-                       {{$item.type === 'income' ? '+' : '-'}}¥{{$item.amount}}
-                    </text>
-                 </div>
-             </div>
-          </block>
-       </div>
+          <!-- 列表 -->
+          <div class="record-list" if="{{dayRecords.length > 0}}">
+            <block for="{{dayRecords}}">
+              <div class="record-item" onclick="toDetail($item)">
+                <!-- Icon -->
+                <div class="icon-wrapper">
+                  <image
+                    class="item-icon"
+                    src="{{$item.categoryIcon}}"
+                    if="{{$item.categoryIcon}}"
+                  ></image>
+                  <image
+                    class="item-icon"
+                    src="/pkg_main/assets/zhihcu_icon/qitaxiaofei2.png"
+                    else
+                  ></image>
+                </div>
+                <!-- Middle -->
+                <div class="item-info">
+                  <text class="item-title">{{ $item.category }}</text>
+                  <text class="item-note">备注: {{ $item.note || '无' }}</text>
+                </div>
+                <!-- Right -->
+                <div class="item-amount-wrapper">
+                  <text
+                    class="item-amount {{$item.type === 'income' ? 'val-income' : 'val-expense'}}"
+                  >
+                    {{ $item.type === 'income' ? '+' : '-' }}¥{{ $item.amount }}
+                  </text>
+                </div>
+              </div>
+            </block>
+          </div>
 
-       <!-- 空状态 -->
-       <div class="empty-view" else>
-          <image class="empty-img" src="/pkg_main/assets/img/kong.png"></image>
-          <text class="empty-text">当前暂无数据~</text>
-       </div>
-    </div>
-    </list-item>
-
+          <!-- 空状态 -->
+          <div class="empty-view" else>
+            <image
+              class="empty-img"
+              src="/pkg_main/assets/img/kong.png"
+            ></image>
+            <text class="empty-text">当前暂无数据~</text>
+          </div>
+        </div>
+      </list-item>
     </list>
 
     <!-- 悬浮按钮 -->
     <div class="fab-btn" if="{{isActive}}" onclick="goToJizhang">
       <image class="fab-icon" src="/pkg_main/assets/img/jizhang.png"></image>
     </div>
-
-    </div>
+  </div>
 </template>
 
 <script>
@@ -132,226 +178,306 @@ export default {
     dayExpense: '0.00'
   },
   onInit() {
-    this.generateDays();
-    this.loadMonthData();
-    this.loadData();
+    this.generateDays()
+    this.loadMonthData()
+    this.loadData()
     this.$watch('isActive', 'onActiveChange')
   },
   onActiveChange(newVal) {
-      if (newVal) {
-          this.loadMonthData();
-          this.loadData();
-      }
+    if (newVal) {
+      this.loadMonthData()
+      this.loadData()
+    }
   },
   generateDays() {
     // 获取当前月份的天数
-    const daysInMonth = new Date(this.currentYear, this.currentMonth, 0).getDate();
+    const daysInMonth = new Date(
+      this.currentYear,
+      this.currentMonth,
+      0
+    ).getDate()
     // 获取当月第一天是星期几 (0=周日, 1=周一, ...)
-    const firstDayOfWeek = new Date(this.currentYear, this.currentMonth - 1, 1).getDay();
+    const firstDayOfWeek = new Date(
+      this.currentYear,
+      this.currentMonth - 1,
+      1
+    ).getDay()
     // 获取今天的日期用于标记
-    const today = new Date();
-    const isCurrentMonth = today.getFullYear() === this.currentYear && (today.getMonth() + 1) === this.currentMonth;
-    const todayDate = today.getDate();
-    
-    let list = [];
-    
+    const today = new Date()
+    const isCurrentMonth =
+      today.getFullYear() === this.currentYear &&
+      today.getMonth() + 1 === this.currentMonth
+    const todayDate = today.getDate()
+
+    let list = []
+
     // 添加空白占位，使第一天对齐到正确的星期
     for (let i = 0; i < firstDayOfWeek; i++) {
-      list.push({ num: '', income: '', expense: '' });
+      list.push({ num: '', income: '', expense: '' })
     }
-    
+
     // 添加当月所有日期
     for (let day = 1; day <= daysInMonth; day++) {
-      const dayObj = { 
-        num: day.toString(), 
-        income: '', 
+      const dayObj = {
+        num: day.toString(),
+        income: '',
         expense: '',
         isToday: isCurrentMonth && day === todayDate,
         isSelected: day === this.selectedDayNum,
-        bgClass: (isCurrentMonth && day === todayDate) ? 'current-day-bg' : ''
-      };
-      list.push(dayObj);
+        bgClass: isCurrentMonth && day === todayDate ? 'current-day-bg' : ''
+      }
+      list.push(dayObj)
     }
-    
-    this.days = list;
+
+    this.days = list
   },
   selectDay(day) {
-      if(!day.num) return;
-      // selection logic
-      this.selectedDayNum = day.num;
-      this.days = this.days.map(d => {
-          if(d.num == day.num) {
-              d.isSelected = true;
-          } else {
-              d.isSelected = false;
-          }
-          return d;
-      });
-      this.loadData();
+    if (!day.num) return
+    // selection logic
+    const oldSelected = this.selectedDayNum
+    this.selectedDayNum = parseInt(day.num)
+
+    this.days = this.days.map(d => {
+      const dayNum = parseInt(d.num)
+      if (dayNum == this.selectedDayNum) {
+        d.isSelected = true
+      } else {
+        d.isSelected = false
+      }
+      return d
+    })
+    this.loadData()
   },
   toDetail(item) {
-      // Navigate to Detail page, passing record string
-      router.push({
-          uri: '/pkg_main/pages/Detail',
-          params: {
-              recordStr: JSON.stringify(item)
-          }
-      })
+    // Navigate to Detail page, passing record string
+    router.push({
+      uri: '/pkg_main/pages/Detail',
+      params: {
+        recordStr: JSON.stringify(item)
+      }
+    })
   },
   goToJizhang() {
-      this.$dispatch('changeTab', { index: 1 })
+    this.$dispatch('changeTab', { index: 1 })
   },
   prevMonth() {
     if (this.currentMonth === 1) {
-      this.currentYear--;
-      this.currentMonth = 12;
+      this.currentYear--
+      this.currentMonth = 12
     } else {
-      this.currentMonth--;
+      this.currentMonth--
     }
-    // 切换月份后不自动选中任何日期
-    this.selectedDayNum = 0;
-    this.generateDays();
-    this.loadMonthData();
-    this.loadData();
+    // 切换月份后自动选择日期
+    this.autoSelectDate()
+    this.generateDays()
+    this.loadMonthData()
+    this.loadData()
   },
   nextMonth() {
     if (this.currentMonth === 12) {
-      this.currentYear++;
-      this.currentMonth = 1;
+      this.currentYear++
+      this.currentMonth = 1
     } else {
-      this.currentMonth++;
+      this.currentMonth++
     }
-    // 切换月份后不自动选中任何日期
-    this.selectedDayNum = 0;
-    this.generateDays();
-    this.loadMonthData();
-    this.loadData();
+    // 切换月份后自动选择日期
+    this.autoSelectDate()
+    this.generateDays()
+    this.loadMonthData()
+    this.loadData()
+  },
+  autoSelectDate() {
+    // 检查是否是当前月份
+    const today = new Date()
+    const isCurrentMonth =
+      today.getFullYear() === this.currentYear &&
+      today.getMonth() + 1 === this.currentMonth
+
+    if (isCurrentMonth) {
+      // 如果是当前月份，选中今天
+      this.selectedDayNum = today.getDate()
+    } else {
+      // 如果不是当前月份，先不选中（loadMonthData后会自动选择第一个有数据的日期）
+      this.selectedDayNum = 0
+    }
   },
   loadMonthData() {
     // 加载当月所有记录，更新日历显示
     storage.get({
       key: 'accounting_records',
-      success: (data) => {
-        let allRecords = [];
+      success: data => {
+        let allRecords = []
         if (data) {
           try {
-            allRecords = JSON.parse(data);
+            allRecords = JSON.parse(data)
           } catch (e) {
-            console.error('Json parse error', e);
+            console.error('Json parse error', e)
           }
         }
-        
-        const monthStr = this.currentMonth < 10 ? '0' + this.currentMonth : '' + this.currentMonth;
-        const yearMonthPrefix = `${this.currentYear}-${monthStr}`;
-        
+
+        const monthStr =
+          this.currentMonth < 10
+            ? '0' + this.currentMonth
+            : '' + this.currentMonth
+        const yearMonthPrefix = `${this.currentYear}-${monthStr}`
+
         // 过滤当月记录
-        const monthRecords = allRecords.filter(r => r.dateStr && r.dateStr.startsWith(yearMonthPrefix));
-        
+        const monthRecords = allRecords.filter(
+          r => r.dateStr && r.dateStr.startsWith(yearMonthPrefix)
+        )
+
         // 统计每天的收支情况
-        const dayStats = {};
+        const dayStats = {}
         monthRecords.forEach(r => {
-          const day = parseInt(r.dateStr.split('-')[2]);
+          const day = parseInt(r.dateStr.split('-')[2])
           if (!dayStats[day]) {
-            dayStats[day] = { income: 0, expense: 0 };
+            dayStats[day] = { income: 0, expense: 0 }
           }
           if (r.type === 'income') {
-            dayStats[day].income += r.amount;
+            dayStats[day].income += r.amount
           } else if (r.type === 'expense') {
-            dayStats[day].expense += r.amount;
+            dayStats[day].expense += r.amount
           }
-        });
-        
+        })
+
         // 更新日历显示
-        this.days = this.days.map(day => {
+        const updatedDays = this.days.map(day => {
           if (day.num) {
-            const dayNum = parseInt(day.num);
-            const stats = dayStats[dayNum];
+            const dayNum = parseInt(day.num)
+            const stats = dayStats[dayNum]
+
+            // 保留选中状态
+            const isSelected = dayNum === this.selectedDayNum
+
             if (stats) {
               // 设置收支金额用于显示
-              day.income = stats.income > 0 ? stats.income.toFixed(2) : '';
-              day.expense = stats.expense > 0 ? stats.expense.toFixed(2) : '';
+              const income = stats.income > 0 ? stats.income.toFixed(2) : ''
+              const expense = stats.expense > 0 ? stats.expense.toFixed(2) : ''
 
               // 背景色逻辑
-              if (day.isToday) {
-                  day.bgClass = 'current-day-bg';
+              let bgClass = ''
+              if (isSelected) {
+                bgClass = ''
+              } else if (day.isToday) {
+                bgClass = 'current-day-bg'
               } else if (stats.income > 0 && stats.expense > 0) {
-                  day.bgClass = 'pink-day-bg';
+                bgClass = 'pink-day-bg'
               } else if (stats.expense > 0) {
-                  day.bgClass = 'pink-day-bg';
+                bgClass = 'pink-day-bg'
               } else if (stats.income > 0) {
-                  day.bgClass = 'cyan-day-bg';
-              } else {
-                  day.bgClass = '';
+                bgClass = 'cyan-day-bg'
+              }
+
+              // 返回新对象
+              return {
+                num: day.num,
+                income: income,
+                expense: expense,
+                isToday: day.isToday,
+                isSelected: isSelected,
+                bgClass: bgClass
               }
             } else {
-              day.income = '';
-              day.expense = '';
-              day.bgClass = day.isToday ? 'current-day-bg' : '';
+              // 返回新对象
+              return {
+                num: day.num,
+                income: '',
+                expense: '',
+                isToday: day.isToday,
+                isSelected: isSelected,
+                bgClass: isSelected ? '' : day.isToday ? 'current-day-bg' : ''
+              }
             }
           }
-          return day;
-        });
+          // 空白占位
+          return { num: '', income: '', expense: '' }
+        })
+        this.days = updatedDays
+
+        // 如果没有选中任何日期，自动选择第一个有数据的日期
+        if (this.selectedDayNum === 0 && Object.keys(dayStats).length > 0) {
+          const firstDayWithData = Math.min(
+            ...Object.keys(dayStats).map(d => parseInt(d))
+          )
+          this.selectedDayNum = firstDayWithData
+          // 重新更新days以反映选中状态
+          this.days = this.days.map(day => {
+            if (day.num && parseInt(day.num) === firstDayWithData) {
+              return { ...day, isSelected: true, bgClass: '' }
+            }
+            return day
+          })
+          this.loadData()
+        }
       },
       fail: () => {
-        console.log('No data found');
+        console.log('No data found')
       }
-    });
+    })
   },
 
   loadData() {
-      if (!this.selectedDayNum) {
-          this.dayRecords = [];
-          this.dayIncome = '0.00';
-          this.dayExpense = '0.00';
-          return;
-      }
-      
-      storage.get({
-          key: 'accounting_records',
-          success: (data) => {
-              let allRecords = [];
-              if (data) {
-                  try {
-                      allRecords = JSON.parse(data);
-                  } catch (e) {
-                      console.error('Json parse error', e);
-                  }
-              }
-              
-              const monthStr = this.currentMonth < 10 ? '0' + this.currentMonth : '' + this.currentMonth;
-              const dayStr = this.selectedDayNum < 10 ? '0' + this.selectedDayNum : '' + this.selectedDayNum;
-              const targetDateStr = `${this.currentYear}-${monthStr}-${dayStr}`;
+    if (!this.selectedDayNum) {
+      this.dayRecords = []
+      this.dayIncome = '0.00'
+      this.dayExpense = '0.00'
+      return
+    }
 
-              const filtered = allRecords.filter(r => r.dateStr === targetDateStr);
-              
-              // 确保每条记录都有 categoryIcon
-              this.dayRecords = filtered.map(r => {
-                  if (!r.categoryIcon) {
-                      console.warn('Record missing categoryIcon:', r.category);
-                      r.categoryIcon = '/pkg_main/assets/zhihcu_icon/qitaxiaofei2.png';
-                  }
-                  return r;
-              }).reverse();
-
-              let inc = 0;
-              let exp = 0;
-              filtered.forEach(r => {
-                  if(r.type === 'income') {
-                      inc += r.amount;
-                  } else {
-                      exp += r.amount;
-                  }
-              });
-              
-              this.dayIncome = inc.toFixed(2);
-              this.dayExpense = exp.toFixed(2);
-          },
-          fail: (data, code) => {
-              this.dayRecords = [];
-              this.dayIncome = '0.00';
-              this.dayExpense = '0.00';
+    storage.get({
+      key: 'accounting_records',
+      success: data => {
+        let allRecords = []
+        if (data) {
+          try {
+            allRecords = JSON.parse(data)
+          } catch (e) {
+            console.error('Json parse error', e)
           }
-      })
+        }
+
+        const monthStr =
+          this.currentMonth < 10
+            ? '0' + this.currentMonth
+            : '' + this.currentMonth
+        const dayStr =
+          this.selectedDayNum < 10
+            ? '0' + this.selectedDayNum
+            : '' + this.selectedDayNum
+        const targetDateStr = `${this.currentYear}-${monthStr}-${dayStr}`
+
+        const filtered = allRecords.filter(r => r.dateStr === targetDateStr)
+
+        // 确保每条记录都有 categoryIcon
+        this.dayRecords = filtered
+          .map(r => {
+            if (!r.categoryIcon) {
+              console.warn('Record missing categoryIcon:', r.category)
+              r.categoryIcon = '/pkg_main/assets/zhihcu_icon/qitaxiaofei2.png'
+            }
+            return r
+          })
+          .reverse()
+
+        let inc = 0
+        let exp = 0
+        filtered.forEach(r => {
+          if (r.type === 'income') {
+            inc += r.amount
+          } else {
+            exp += r.amount
+          }
+        })
+
+        this.dayIncome = inc.toFixed(2)
+        this.dayExpense = exp.toFixed(2)
+      },
+      fail: (data, code) => {
+        this.dayRecords = []
+        this.dayIncome = '0.00'
+        this.dayExpense = '0.00'
+      }
+    })
   }
 }
 </script>
@@ -371,18 +497,18 @@ export default {
 .details-item {
   flex-direction: column;
 }
-.details-item{
+.details-item {
   margin-top: 10px;
 }
 .header-item {
-  min-height: 240px;
+  min-height: 320px;
   overflow: visible;
 }
 
 .header-wrapper {
   position: relative;
   flex-direction: column;
-  min-height: 240px;
+  min-height: 320px;
   overflow: visible;
 }
 
@@ -411,20 +537,20 @@ export default {
   flex-direction: row;
   justify-content: flex-start;
   align-items: center;
-  margin-bottom: 5px;
-  min-height: 16px;
+  margin-bottom: 8px;
+  min-height: 24px;
 }
 
 .date-text-wrapper {
-    flex-direction: row;
-    align-items: center;
-    margin: 0 9px;
-    min-width: 46px;
-    justify-content: center;
+  flex-direction: row;
+  align-items: center;
+  margin: 0 12px;
+  min-width: 60px;
+  justify-content: center;
 }
 
 .date-text {
-  font-size: 8px;
+  font-size: 12px;
   color: #333333;
   font-weight: bold;
   lines: 1;
@@ -432,15 +558,15 @@ export default {
 }
 
 .arrow-small {
-    width: 5px;
-    height: 5px;
-    margin-left: 2px;
-    object-fit: contain;
+  width: 7px;
+  height: 7px;
+  margin-left: 3px;
+  object-fit: contain;
 }
 
 .arrow-icon {
-  width: 12px;
-  height: 12px;
+  width: 16px;
+  height: 16px;
   object-fit: contain;
 }
 
@@ -448,7 +574,7 @@ export default {
   margin-top: 45px;
   border-radius: 5px;
   overflow: visible;
-  min-height: 180px;
+  min-height: 240px;
   position: relative;
 }
 
@@ -467,7 +593,12 @@ export default {
   left: 0;
   right: 0;
   bottom: 0;
-  background: linear-gradient(to bottom, rgba(255, 255, 255, 0.75), rgba(255, 255, 255, 0.9), #ffffff);
+  background: linear-gradient(
+    to bottom,
+    rgba(255, 255, 255, 0.75),
+    rgba(255, 255, 255, 0.9),
+    #ffffff
+  );
 }
 
 .calendar-card {
@@ -475,20 +606,20 @@ export default {
   background-color: transparent;
   border-radius: 5px;
   padding: 5px 0;
-  padding-bottom: 3px;
-  min-height: 180px;
+  padding-bottom: 8px;
+  min-height: 240px;
 }
 
 .week-header {
   flex-direction: row;
   justify-content: space-around;
-  margin-bottom: 2px;
+  margin-bottom: 4px;
 }
 
 .week-item {
-  font-size: 6px;
+  font-size: 9px;
   color: #666666;
-  width: 19px;
+  width: 26px;
   text-align: center;
 }
 
@@ -502,29 +633,29 @@ export default {
 }
 
 .day-wrapper {
-  width: 14.28%; 
+  width: 14.28%;
   flex-direction: column;
   align-items: center;
   justify-content: flex-start;
-  margin-bottom: 3px;
-  min-height: 23px;
+  margin-bottom: 5px;
+  min-height: 32px;
 }
 
 .day-content {
-  width: 16px;
-  height: 16px;
-  border-radius: 8px;
+  width: 22px;
+  height: 22px;
+  border-radius: 11px;
   justify-content: center;
   align-items: center;
-  flex-direction: column; 
+  flex-direction: column;
 }
 
 .current-day-bg {
-  background-color: #ff5050; 
+  background-color: #ff5050;
 }
 
 .selected-day-bg {
-    background-color: #b3e5fc; 
+  background-color: #ff5050;
 }
 
 .pink-day-bg {
@@ -536,7 +667,7 @@ export default {
 }
 
 .day-num {
-  font-size: 10px;
+  font-size: 14px;
   color: #333333;
   font-weight: bold;
 }
@@ -550,118 +681,118 @@ export default {
 }
 
 .today-text {
-    font-size: 5px;
-    color: #ffffff;
-    margin-top: -1px;
+  font-size: 7px;
+  color: #ffffff;
+  margin-top: -1px;
 }
 .today-tag {
-    font-size: 5px;
-    color: #ffffff;
+  font-size: 7px;
+  color: #ffffff;
 }
 
 .day-indicators {
-    flex-direction: column;
-    align-items: center;
-    margin-top: 1px;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 2px;
 }
 
 .indicator {
-    font-size: 4px;
+  font-size: 6px;
 }
 
 .income {
-    color: #00bfa5;
+  color: #00bfa5;
 }
 
 .expense {
-    color: #ff5050;
+  color: #ff5050;
 }
 
 .details-section {
-    flex-direction: column;
-    background-color: #ffffff;
-    border-top-left-radius: 7px;
-    border-top-right-radius: 7px;
-    margin-top: 7px;
-    padding: 7px;
-    padding-bottom: 80px;
+  flex-direction: column;
+  background-color: #ffffff;
+  border-top-left-radius: 7px;
+  border-top-right-radius: 7px;
+  margin-top: 7px;
+  padding: 7px;
+  padding-bottom: 80px;
 }
 
 .detail-header {
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 12px;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
 }
 
 .detail-date-title {
-    font-size: 9px;
-    font-weight: bold;
-    color: #000000;
+  font-size: 13px;
+  font-weight: bold;
+  color: #000000;
 }
 
 .detail-summary {
-    flex-direction: row;
+  flex-direction: row;
 }
 
 .summary-label {
-    font-size: 6px;
-    color: #666666;
+  font-size: 9px;
+  color: #666666;
 }
 
 .summary-val {
-    font-size: 6px;
-    margin-left: 2px;
-    font-weight: bold;
+  font-size: 9px;
+  margin-left: 3px;
+  font-weight: bold;
 }
 
 .income-val {
-    color: #00bfa5;
+  color: #00bfa5;
 }
 
 .expense-val {
-    color: #ff5050;
+  color: #ff5050;
 }
 
 .space {
-    margin-left: 7px;
+  margin-left: 10px;
 }
 
 .empty-view {
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    margin-top: 12px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-top: 16px;
 }
 
 .empty-img {
-    width: 69px;
-    height: 69px;
-    object-fit: contain;
+  width: 92px;
+  height: 92px;
+  object-fit: contain;
 }
 
 .empty-text {
-    font-size: 6px;
-    color: #999999;
-    margin-top: 5px;
+  font-size: 9px;
+  color: #999999;
+  margin-top: 7px;
 }
 
 .fab-btn {
-    position: fixed;
-    bottom: 46px;
-    right: 9px;
-    width: 46px;
-    height: 46px;
-    border-radius: 50%;
-    justify-content: center;
-    align-items: center;
-    z-index: 1000;
+  position: fixed;
+  bottom: 62px;
+  right: 9px;
+  width: 54px;
+  height: 54px;
+  border-radius: 50%;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
 }
 
 .fab-icon {
-    width: 46px;
-    height: 46px;
-    object-fit: contain;
+  width: 54px;
+  height: 54px;
+  object-fit: contain;
 }
 
 /* List Styles */
@@ -671,22 +802,22 @@ export default {
 .record-item {
   flex-direction: row;
   align-items: center;
-  margin-bottom: 9px;
-  padding-bottom: 5px;
+  margin-bottom: 12px;
+  padding-bottom: 7px;
   border-bottom-width: 1px;
   border-bottom-color: #f5f5f5;
 }
 .icon-wrapper {
-  width: 23px;
-  height: 23px;
-  border-radius: 12px;
+  width: 32px;
+  height: 32px;
+  border-radius: 16px;
   justify-content: center;
   align-items: center;
-  margin-right: 5px;
+  margin-right: 7px;
 }
 .item-icon {
-  width: 23px;
-  height: 23px;
+  width: 32px;
+  height: 32px;
   object-fit: contain;
 }
 .item-info {
@@ -695,13 +826,13 @@ export default {
   justify-content: center;
 }
 .item-title {
-  font-size: 7px;
+  font-size: 10px;
   color: #333333;
   font-weight: bold;
-  margin-bottom: 2px;
+  margin-bottom: 3px;
 }
 .item-note {
-  font-size: 6px;
+  font-size: 8px;
   color: #999999;
 }
 .item-amount-wrapper {
@@ -710,13 +841,13 @@ export default {
   justify-content: center;
 }
 .item-amount {
-  font-size: 8px;
+  font-size: 11px;
   font-weight: bold;
 }
 .val-income {
-    color: #00bfa5;
+  color: #00bfa5;
 }
 .val-expense {
-    color: #ff5050;
+  color: #ff5050;
 }
 </style>

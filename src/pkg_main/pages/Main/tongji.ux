@@ -2,113 +2,158 @@
   <list class="page">
     <list-item type="main-scroll">
       <div class="col-wrapper">
-      <div class="header">
-        <image class="header-bg" src="/pkg_main/assets/img/shouyedingbg-1.png" resize-mode="cover"></image>
-        <div class="date-select">
-          <image class="arrow-icon" src="/pkg_main/assets/img/zuo.png" onclick="prevMonth"></image>
-          <div class="date-text-wrapper">
-            <text class="date-text">{{currentDate}}</text>
-            <image class="arrow-small" src="/pkg_main/assets/img/jiantou.png"></image>
-          </div>
-          <image class="arrow-icon" src="/pkg_main/assets/img/you.png" onclick="nextMonth"></image>
-        </div>
-      </div>
-    
-      <div class="content">
-      <div class="card-wrapper">
-        <div class="card-stack">
-          <!-- 模糊背景层 -->
-          <div class="blur-layer"></div>
-          <!-- 白色渐变遮罩 -->
-          <div class="frost-overlay"></div>
-          <!-- 卡片内容 -->
-          <div class="card-content">
-            <div class="card-item item-half">
-              <text class="card-label">本月支出</text>
-              <text class="card-value expense">¥{{totalExpense}}</text>
+        <div class="header">
+          <image
+            class="header-bg"
+            src="/pkg_main/assets/img/shouyedingbg-1.png"
+            resize-mode="cover"
+          ></image>
+          <div class="date-select">
+            <image
+              class="arrow-icon"
+              src="/pkg_main/assets/img/zuo.png"
+              onclick="prevMonth"
+            ></image>
+            <div class="date-text-wrapper">
+              <text class="date-text">{{ currentDate }}</text>
+              <image
+                class="arrow-small"
+                src="/pkg_main/assets/img/jiantou.png"
+              ></image>
             </div>
-            <div class="card-item item-half">
-              <text class="card-label">本月收入</text>
-              <text class="card-value income">¥{{totalIncome}}</text>
-            </div>
-            <div class="card-item item-full">
-              <text class="card-label">结余</text>
-              <text class="card-value balance">¥{{balance}}</text>
-            </div>
+            <image
+              class="arrow-icon"
+              src="/pkg_main/assets/img/you.png"
+              onclick="nextMonth"
+            ></image>
           </div>
         </div>
-      </div>
-      
-      <div class="empty-box" if="{{!hasData}}">
-        <image class="empty-img" src="/pkg_main/assets/img/tongji-kong.png"></image>
-        <text class="empty-text">当前暂无数据~</text>
-      </div>
 
-      <div class="charts-container" if="{{hasData}}">
-          <!-- Trend Chart -->
-          <div class="chart-section trend-section">
+        <div class="content">
+          <div class="card-wrapper">
+            <div class="card-stack">
+              <!-- 模糊背景层 -->
+              <div class="blur-layer"></div>
+              <!-- 白色渐变遮罩 -->
+              <div class="frost-overlay"></div>
+              <!-- 卡片内容 -->
+              <div class="card-content">
+                <div class="card-item item-half">
+                  <text class="card-label">本月支出</text>
+                  <text class="card-value expense">¥{{ totalExpense }}</text>
+                </div>
+                <div class="card-item item-half">
+                  <text class="card-label">本月收入</text>
+                  <text class="card-value income">¥{{ totalIncome }}</text>
+                </div>
+                <div class="card-item item-full">
+                  <text class="card-label">结余</text>
+                  <text class="card-value balance">¥{{ balance }}</text>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="empty-box" if="{{!hasData}}">
+            <image
+              class="empty-img"
+              src="/pkg_main/assets/img/tongji-kong.png"
+            ></image>
+            <text class="empty-text">当前暂无数据~</text>
+          </div>
+
+          <div class="charts-container" if="{{hasData}}">
+            <!-- Trend Chart -->
+            <div class="chart-section trend-section">
               <div class="section-header">
-                  <text class="section-title">本月趋势</text>
-                  <div class="switch-btn">
-                       <text class="{{chartType === 'expense' ? 'active-btn' : 'normal-btn'}}" onclick="switchChart('expense')">支出</text>
-                       <text class="{{chartType === 'income' ? 'active-btn' : 'normal-btn'}}" onclick="switchChart('income')">收入</text>
-                  </div>
+                <text class="section-title">本月趋势</text>
+                <div class="switch-btn">
+                  <text
+                    class="{{chartType === 'expense' ? 'active-btn' : 'normal-btn'}}"
+                    onclick="switchChart('expense')"
+                    >支出</text
+                  >
+                  <text
+                    class="{{chartType === 'income' ? 'active-btn' : 'normal-btn'}}"
+                    onclick="switchChart('income')"
+                    >收入</text
+                  >
+                </div>
               </div>
               <canvas id="lineChart" class="line-chart"></canvas>
-          </div>
+            </div>
 
-          <!-- Ranking Chart -->
-           <div class="chart-section">
+            <!-- Ranking Chart -->
+            <div class="chart-section">
               <div class="section-header">
-                  <text class="section-title">本月排行</text>
-                   <div class="switch-btn">
-                       <text class="{{rankType === 'expense' ? 'active-btn' : 'normal-btn'}}" onclick="switchRank('expense')">支出</text>
-                       <text class="{{rankType === 'income' ? 'active-btn' : 'normal-btn'}}" onclick="switchRank('income')">收入</text>
-                  </div>
+                <text class="section-title">本月排行</text>
+                <div class="switch-btn">
+                  <text
+                    class="{{rankType === 'expense' ? 'active-btn' : 'normal-btn'}}"
+                    onclick="switchRank('expense')"
+                    >支出</text
+                  >
+                  <text
+                    class="{{rankType === 'income' ? 'active-btn' : 'normal-btn'}}"
+                    onclick="switchRank('income')"
+                    >收入</text
+                  >
+                </div>
               </div>
               <div class="pie-container">
-                  <div class="pie-wrapper">
-                      <div class="pie-stack">
-                          <canvas id="pieChart" class="pie-chart"></canvas>
-                      </div>
+                <div class="pie-wrapper">
+                  <div class="pie-stack">
+                    <canvas id="pieChart" class="pie-chart"></canvas>
                   </div>
-                  <!-- 右侧图例 -->
-                  <div class="pie-legend">
-                      <block for="{{rankingList}}">
-                          <div class="legend-item">
-                              <div class="legend-dot" style="background-color: {{$item.color}};"></div>
-                              <text class="legend-text">{{$item.category}}</text>
-                          </div>
-                      </block>
-                  </div>
-              </div>
-              
-              <!-- 排行列表 -->
-              <div class="rank-list-container">
+                </div>
+                <!-- 右侧图例 -->
+                <div class="pie-legend">
                   <block for="{{rankingList}}">
-                    <div class="rank-item">
-                        <!-- 图标 -->
-                        <div class="rank-icon-wrapper">
-                             <image class="rank-icon" src="{{$item.icon}}"></image>
-                        </div>
-                        
-                        <!-- 进度条和信息 -->
-                        <div class="rank-info">
-                            <div class="rank-title-row">
-                                <text class="rank-name">{{$item.category}} {{$item.percent}}%</text>
-                                <text class="rank-amount">-¥{{$item.amount}}</text>
-                            </div>
-                            <div class="progress-bar-bg" style="background-color: rgba(255, 99, 132, 0.2);"> 
-                                <div class="progress-bar-fill" style="width: {{$item.percent}}%; background-color: #FF6384;"></div>
-                            </div>
-                        </div>
+                    <div class="legend-item">
+                      <div
+                        class="legend-dot"
+                        style="background-color: {{$item.color}};"
+                      ></div>
+                      <text class="legend-text">{{ $item.category }}</text>
                     </div>
                   </block>
+                </div>
               </div>
+
+              <!-- 排行列表 -->
+              <div class="rank-list-container">
+                <block for="{{rankingList}}">
+                  <div class="rank-item">
+                    <!-- 图标 -->
+                    <div class="rank-icon-wrapper">
+                      <image class="rank-icon" src="{{$item.icon}}"></image>
+                    </div>
+
+                    <!-- 进度条和信息 -->
+                    <div class="rank-info">
+                      <div class="rank-title-row">
+                        <text class="rank-name"
+                          >{{ $item.category }} {{ $item.percent }}%</text
+                        >
+                        <text class="rank-amount">-¥{{ $item.amount }}</text>
+                      </div>
+                      <div
+                        class="progress-bar-bg"
+                        style="background-color: rgba(255, 99, 132, 0.2);"
+                      >
+                        <div
+                          class="progress-bar-fill"
+                          style="width: {{$item.percent}}%; background-color: #FF6384;"
+                        ></div>
+                      </div>
+                    </div>
+                  </div>
+                </block>
+              </div>
+            </div>
           </div>
+        </div>
       </div>
-    </div>
-    </div>
     </list-item>
   </list>
 </template>
@@ -131,31 +176,31 @@ export default {
     allMonthRecords: []
   },
   onInit() {
-    this.refreshData();
+    this.refreshData()
     this.$watch('isActive', 'onActiveChange')
   },
   onActiveChange(newVal) {
-      if (newVal) {
-          this.refreshData();
-      }
+    if (newVal) {
+      this.refreshData()
+    }
   },
   refreshData() {
-      storage.get({
-          key: 'accounting_records',
-          success: (data) => {
-              let records = [];
-              if (data) {
-                  try {
-                    records = JSON.parse(data);
-                  } catch(e) {}
-              }
-              
-              this.processData(records);
-          },
-          fail: () => {
-              this.processData([]);
-          }
-      })
+    storage.get({
+      key: 'accounting_records',
+      success: data => {
+        let records = []
+        if (data) {
+          try {
+            records = JSON.parse(data)
+          } catch (e) {}
+        }
+
+        this.processData(records)
+      },
+      fail: () => {
+        this.processData([])
+      }
+    })
   },
 
   processData(records) {
@@ -169,9 +214,7 @@ export default {
 
     // Filter by month (Mock for now, using all data or current month)
     // Assuming currentDate is 'YYYY-MM'
-    const filtered = records.filter((r) =>
-      r.dateStr.startsWith(this.currentDate)
-    )
+    const filtered = records.filter(r => r.dateStr.startsWith(this.currentDate))
 
     // 检查过滤后的数据是否为空
     if (filtered.length === 0) {
@@ -181,14 +224,14 @@ export default {
       this.balance = 0
       return
     }
-    
+
     this.hasData = true
 
     let exp = 0
     let inc = 0
     let trendData = {} // Date -> Amount
 
-    filtered.forEach((r) => {
+    filtered.forEach(r => {
       if (r.type === 'expense') exp += r.amount
       else inc += r.amount
     })
@@ -211,7 +254,7 @@ export default {
       categories.push(`${monthStr}.${dayStr}`)
       let fullDayStr = `${this.currentDate}-${dayStr}`
       let val = filtered
-        .filter((r) => r.dateStr === fullDayStr && r.type === this.chartType)
+        .filter(r => r.dateStr === fullDayStr && r.type === this.chartType)
         .reduce((sum, r) => sum + r.amount, 0)
 
       values.push(val)
@@ -227,57 +270,58 @@ export default {
     const canvas = this.$element('lineChart')
     const ctx = canvas.getContext('2d')
     const chartColor = this.chartType === 'expense' ? '#FF7064' : '#4CAF50'
-    const chartRgb = this.chartType === 'expense' ? '255, 112, 100' : '76, 175, 80'
+    const chartRgb =
+      this.chartType === 'expense' ? '255, 112, 100' : '76, 175, 80'
     const chartName = this.chartType === 'expense' ? '支出变化' : '收入变化'
-    
-    // 增加底部padding用于图例
-    const width = 208
-    const height = 83
-    const padding = { left: 22, right: 8, top: 12, bottom: 25 }
+
+    // 增加底部padding用于图例，调整为新的canvas尺寸
+    const width = 270
+    const height = 115
+    const padding = { left: 38, right: 10, top: 14, bottom: 36 }
     const chartWidth = width - padding.left - padding.right
     const chartHeight = height - padding.top - padding.bottom
-    
+
     // 清空画布
     ctx.clearRect(0, 0, width, height)
-    
+
     // 找出最大值用于Y轴缩放
     const maxValue = Math.max(...values, 1)
     const yStep = Math.ceil(maxValue / 4)
     const yMax = yStep * 4
-    
+
     // 绘制Y轴网格线和标签
     ctx.strokeStyle = '#f5f5f5' // 更淡的网格线
-    ctx.lineWidth = 0.5
-    ctx.font = '6px sans-serif'
+    ctx.lineWidth = 0.7
+    ctx.font = '8px sans-serif'
     ctx.fillStyle = '#999999'
     ctx.textAlign = 'right'
     ctx.textBaseline = 'middle'
-    
+
     for (let i = 0; i <= 4; i++) {
       const y = padding.top + chartHeight - (chartHeight / 4) * i
       // 绘制虚线网格
-      ctx.setLineDash([2, 2])
+      ctx.setLineDash([3, 3])
       ctx.beginPath()
       ctx.moveTo(padding.left, y)
       ctx.lineTo(width - padding.right, y)
       ctx.stroke()
-      
+
       // Y轴标签
       const yValue = (yMax / 4) * i
-      ctx.fillText(yValue.toFixed(0), padding.left - 2, y)
+      ctx.fillText(yValue.toFixed(0), padding.left - 3, y)
     }
-    
+
     ctx.setLineDash([])
-    
+
     // 绘制X轴标签（抽样显示，避免太密集）
     ctx.textAlign = 'center'
     ctx.textBaseline = 'top'
-    ctx.font = '5.5px sans-serif'
+    ctx.font = '6.5px sans-serif'
     ctx.fillStyle = '#999999'
-    const step = Math.ceil(categories.length / 6) // 控制标签密度
+    const step = Math.ceil(categories.length / 10) // 增加标签密度，显示更多日期
     for (let i = 0; i < categories.length; i += step) {
       const x = padding.left + (chartWidth / (categories.length - 1)) * i
-      ctx.fillText(categories[i], x, height - padding.bottom + 4) // 稍微下移
+      ctx.fillText(categories[i], x, height - padding.bottom + 5) // 稍微下移
     }
 
     // 绘制下划线（X轴）
@@ -286,7 +330,7 @@ export default {
     ctx.moveTo(padding.left, height - padding.bottom)
     ctx.lineTo(width - padding.right, height - padding.bottom)
     ctx.stroke()
-    
+
     // 绘制折线和面积
     if (values.length > 0) {
       // 计算点的坐标
@@ -294,114 +338,121 @@ export default {
         x: padding.left + (chartWidth / Math.max(values.length - 1, 1)) * idx,
         y: padding.top + chartHeight - (val / yMax) * chartHeight
       }))
-      
+
       // 绘制渐变区域
-      const gradient = ctx.createLinearGradient(0, padding.top, 0, height - padding.bottom)
+      const gradient = ctx.createLinearGradient(
+        0,
+        padding.top,
+        0,
+        height - padding.bottom
+      )
       // 使用rgba以兼容真机，避免Hex透明度解析错误导致颜色异常
       gradient.addColorStop(0, `rgba(${chartRgb}, 0.85)`)
-      gradient.addColorStop(1, 'rgba(255, 255, 255, 0)') 
-      
+      gradient.addColorStop(1, 'rgba(255, 255, 255, 0)')
+
       ctx.fillStyle = gradient
       ctx.beginPath()
       ctx.moveTo(points[0].x, height - padding.bottom)
-      
+
       if (points.length === 1) {
         ctx.lineTo(points[0].x, points[0].y)
       } else {
         // 使用更加平滑的曲线算法
         ctx.lineTo(points[0].x, points[0].y)
         for (let i = 0; i < points.length - 1; i++) {
-           const curr = points[i]
-           const next = points[i + 1]
-           const cx = (curr.x + next.x) / 2
-           // 贝塞尔曲线控制点
-           // 使用中点作为控制点的一种简化平滑
-           ctx.bezierCurveTo(cx, curr.y, cx, next.y, next.x, next.y)
+          const curr = points[i]
+          const next = points[i + 1]
+          const cx = (curr.x + next.x) / 2
+          // 贝塞尔曲线控制点
+          // 使用中点作为控制点的一种简化平滑
+          ctx.bezierCurveTo(cx, curr.y, cx, next.y, next.x, next.y)
         }
       }
-      
+
       ctx.lineTo(points[points.length - 1].x, height - padding.bottom)
       ctx.closePath()
       ctx.fill()
-      
+
       // 绘制折线
       ctx.strokeStyle = '#333333' // 黑色线条，参考截图
       ctx.lineWidth = 0.8 // 线条变细
       ctx.lineCap = 'round'
       ctx.lineJoin = 'round'
       ctx.beginPath()
-      
+
       if (points.length === 1) {
         ctx.moveTo(points[0].x, points[0].y)
         ctx.lineTo(points[0].x, points[0].y)
       } else {
         ctx.moveTo(points[0].x, points[0].y)
         for (let i = 0; i < points.length - 1; i++) {
-           const curr = points[i]
-           const next = points[i + 1]
-           const cx = (curr.x + next.x) / 2
-           ctx.bezierCurveTo(cx, curr.y, cx, next.y, next.x, next.y)
+          const curr = points[i]
+          const next = points[i + 1]
+          const cx = (curr.x + next.x) / 2
+          ctx.bezierCurveTo(cx, curr.y, cx, next.y, next.x, next.y)
         }
       }
       ctx.stroke()
-      
+
       // 绘制数据点 (空心圆)
       ctx.fillStyle = '#ffffff'
       ctx.strokeStyle = '#333333' // 深色边框
-      ctx.lineWidth = 0.6 // 描边变细
+      ctx.lineWidth = 0.8 // 描边变细
       points.forEach((p, index) => {
         // 只在峰顶或特定间隔画点可能更像截图，但全部画也行
-        if (index % step === 0 || values[index] > yMax * 0.8 ) { // 简单抽样画点
-            ctx.beginPath()
-            // 确保值为0时，圆圈贴合X轴
-            const yPos = values[index] === 0 ? (height - padding.bottom) : p.y
-            ctx.arc(p.x, yPos, 1.8, 0, Math.PI * 2) // 圆点变小 (2.5 -> 1.8)
-            ctx.fill()
-            ctx.stroke()
+        if (index % step === 0 || values[index] > yMax * 0.8) {
+          // 简单抽样画点
+          ctx.beginPath()
+          // 确保值为0时，圆圈贴合X轴
+          const yPos = values[index] === 0 ? height - padding.bottom : p.y
+          ctx.arc(p.x, yPos, 2.5, 0, Math.PI * 2) // 圆点适当放大
+          ctx.fill()
+          ctx.stroke()
         }
       })
     }
-    
+
     // 绘制图例
-    const legendY = height - 5
+    const legendY = height - 7
     const legendX = width / 2
-    
+
     ctx.beginPath()
     ctx.strokeStyle = '#333333'
-    ctx.lineWidth = 1
-    ctx.moveTo(legendX - 25, legendY)
-    ctx.lineTo(legendX - 7, legendY)
+    ctx.lineWidth = 1.2
+    ctx.moveTo(legendX - 34, legendY)
+    ctx.lineTo(legendX - 10, legendY)
     ctx.stroke()
-    
+
     // 图例上的圆圈
     ctx.fillStyle = '#ffffff'
     ctx.strokeStyle = '#333333'
-    ctx.lineWidth = 1
+    ctx.lineWidth = 1.2
     ctx.beginPath()
-    ctx.arc(legendX - 16, legendY, 2, 0, Math.PI * 2)
+    ctx.arc(legendX - 22, legendY, 2.8, 0, Math.PI * 2)
     ctx.fill()
     ctx.stroke()
-    
+
     // 图例文字
     ctx.fillStyle = '#666666'
-    ctx.font = '6px sans-serif'
+    ctx.font = '8px sans-serif'
     ctx.textAlign = 'left'
     ctx.textBaseline = 'middle'
-    ctx.fillText(chartName, legendX - 2, legendY)
+    ctx.fillText(chartName, legendX - 3, legendY)
   },
   calculateRanking(records) {
     const type = this.rankType
-    const data = records.filter((r) => r.type === type)
+    const data = records.filter(r => r.type === type)
 
     const map = {}
     let total = 0
 
-    data.forEach((r) => {
-      if (!r.category) return; // 跳过没有category的记录
+    data.forEach(r => {
+      if (!r.category) return // 跳过没有category的记录
       if (!map[r.category]) {
         map[r.category] = {
           amount: 0,
-          icon: r.categoryIcon || '/pkg_main/assets/zhihcu_icon/qitaxiaofei2.png'
+          icon:
+            r.categoryIcon || '/pkg_main/assets/zhihcu_icon/qitaxiaofei2.png'
         }
       }
       map[r.category].amount += r.amount
@@ -409,7 +460,7 @@ export default {
     })
 
     const list = Object.keys(map)
-      .map((cat) => ({
+      .map(cat => ({
         category: cat,
         amount: map[cat].amount,
         icon: map[cat].icon,
@@ -417,7 +468,18 @@ export default {
       }))
       .sort((a, b) => b.amount - a.amount)
 
-    const colors = ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF', '#FF9F40', '#8BC34A', '#03A9F4', '#E91E63', '#9E9E9E']
+    const colors = [
+      '#FF6384',
+      '#36A2EB',
+      '#FFCE56',
+      '#4BC0C0',
+      '#9966FF',
+      '#FF9F40',
+      '#8BC34A',
+      '#03A9F4',
+      '#E91E63',
+      '#9E9E9E'
+    ]
     this.rankingList = list.slice(0, 5).map((item, idx) => ({
       ...item,
       percent: total > 0 ? ((item.amount / total) * 100).toFixed(1) : 0,
@@ -425,187 +487,187 @@ export default {
       color: colors[idx % colors.length]
     }))
 
-     // Prepare data for Pie Chart - 只包含有效的数据
+    // Prepare data for Pie Chart - 只包含有效的数据
     const pieData = this.rankingList
       .filter(item => item.category && item.percent > 0)
       .map(item => ({
         value: parseFloat(item.percent),
         name: item.category,
         color: item.color
-      }));
+      }))
 
     setTimeout(() => {
-      this.drawPieChart(pieData);
+      this.drawPieChart(pieData)
     }, 100)
   },
-  
+
   drawPieChart(data) {
     if (!this.$element('pieChart')) return
     const canvas = this.$element('pieChart')
     const ctx = canvas.getContext('2d')
-    
-    // Canvas dimensions (match CSS .pie-chart)
-    const width = 150
-    const height = 110
+
+    // Canvas dimensions (match CSS .pie-chart) - 更新为新的尺寸
+    const width = 160
+    const height = 150
     const centerX = width / 2
     const centerY = height / 2
-    
-    // 调整半径
-    const outerRadius = 28
-    const innerRadius = 15
-    
+
+    // 调整半径以适应新的canvas尺寸
+    const outerRadius = 30
+    const innerRadius = 16
+
     // 清空画布
     ctx.clearRect(0, 0, width, height)
-    
+
     // 绘制中间的文字 100
     ctx.fillStyle = '#000000'
-    ctx.font = 'bold 9px sans-serif'
+    ctx.font = 'bold 12px sans-serif'
     ctx.textAlign = 'center'
     ctx.textBaseline = 'middle'
     ctx.fillText('100', centerX, centerY)
 
     if (data.length === 0) return
-    
+
     const total = data.reduce((sum, item) => sum + item.value, 0)
     let currentAngle = -Math.PI / 2
-    
+
     data.forEach((item, index) => {
       const sliceAngle = (item.value / total) * Math.PI * 2
       const endAngle = currentAngle + sliceAngle
       const midAngle = currentAngle + sliceAngle / 2
-      
+
       // 绘制扇形
       // 使用描边方式绘制圆环，避免单个数据时圆心被填满的问题
       const midRadius = (outerRadius + innerRadius) / 2
       const thickness = outerRadius - innerRadius
-      
+
       ctx.beginPath()
       ctx.arc(centerX, centerY, midRadius, currentAngle, endAngle)
-      
+
       ctx.strokeStyle = item.color
       ctx.lineWidth = thickness
       // 解决Android/Canvas上有时出现的连接处缝隙问题，但对于单个圆环不影响
-      // ctx.lineCap = 'butt' 
+      // ctx.lineCap = 'butt'
       ctx.stroke()
-      
+
       // 绘制指示线和标签
       // 只有当前扇区足够大时才显示标签
-      if (item.value > 2.0) { 
+      if (item.value > 2.0) {
         const isRight = Math.cos(midAngle) >= 0
         const lineLen1 = 6
         const lineLen2 = 8
-        
-        const r1 = outerRadius + 1
+
+        const r1 = outerRadius + 2
         const x1 = centerX + Math.cos(midAngle) * r1
         const y1 = centerY + Math.sin(midAngle) * r1
-        
+
         const r2 = outerRadius + lineLen1
         const x2 = centerX + Math.cos(midAngle) * r2
         const y2 = centerY + Math.sin(midAngle) * r2
-        
+
         // 限制y2坐标，防止跑出画布
         // y2 = Math.max(5, Math.min(height - 5, y2));
-        
+
         let x3 = isRight ? x2 + lineLen2 : x2 - lineLen2
-        // 防止标签跑出画布
+        // 防止标签跑出画布 - 增加边距
         if (isRight && x3 > width - 2) x3 = width - 2
         if (!isRight && x3 < 2) x3 = 2
-        
+
         const y3 = y2
-        
+
         // 绘制折线
         ctx.strokeStyle = item.color
-        ctx.lineWidth = 0.5
+        ctx.lineWidth = 0.7
         ctx.beginPath()
         ctx.moveTo(x1, y1)
         ctx.lineTo(x2, y2)
         ctx.lineTo(x3, y3)
         ctx.stroke()
-        
+
         // 绘制文字
         ctx.textAlign = isRight ? 'left' : 'right'
-        const textPad = 2
-        
+        const textPad = 3
+
         // 第一行：类别名 (使用更小的字体适应小画布)
-        ctx.fillStyle = '#666666' 
-        ctx.font = '5px sans-serif'
+        ctx.fillStyle = '#666666'
+        ctx.font = '7px sans-serif'
         ctx.textBaseline = 'bottom'
         // x3 作为基准
         const tx = isRight ? x3 + textPad : x3 - textPad
         // 如果靠边缘太近，向内挤一下
         let drawX = tx
-        if (isRight && drawX > width - 10) drawX = width - 10
-        if (!isRight && drawX < 10) drawX = 10
+        if (isRight && drawX > width - 15) drawX = width - 15
+        if (!isRight && drawX < 15) drawX = 15
 
-        ctx.fillText(item.name, drawX, y3 - 0.5)
-        
+        ctx.fillText(item.name, drawX, y3 - 0.7)
+
         // 第二行：数值
         ctx.fillStyle = item.color
-        ctx.font = 'bold 5px sans-serif'
+        ctx.font = 'bold 7px sans-serif'
         ctx.textBaseline = 'top'
-        ctx.fillText(item.value.toFixed(2), drawX, y3 + 0.5)
+        ctx.fillText(item.value.toFixed(2), drawX, y3 + 0.7)
       }
-      
+
       currentAngle = endAngle
     })
   },
-  
+
   switchChart(type) {
-      this.chartType = type;
-      // Only update trend chart
-      const [year, month] = this.currentDate.split('-').map(Number)
-      const daysInMonth = new Date(year, month, 0).getDate()
-      const categories = []
-      const values = []
-      const monthStr = month < 10 ? '0' + month : month
-      for (let i = 1; i <= daysInMonth; i++) {
-        const dayStr = i < 10 ? '0' + i : i
-        categories.push(`${monthStr}.${dayStr}`)
-        let fullDayStr = `${this.currentDate}-${dayStr}`
-        let val = this.allMonthRecords
-          .filter((r) => r.dateStr === fullDayStr && r.type === this.chartType)
-          .reduce((sum, r) => sum + r.amount, 0)
-        
-        values.push(val)
-      }
-      setTimeout(() => {
-        this.drawTrendChart(categories, values)
-      }, 100)
+    this.chartType = type
+    // Only update trend chart
+    const [year, month] = this.currentDate.split('-').map(Number)
+    const daysInMonth = new Date(year, month, 0).getDate()
+    const categories = []
+    const values = []
+    const monthStr = month < 10 ? '0' + month : month
+    for (let i = 1; i <= daysInMonth; i++) {
+      const dayStr = i < 10 ? '0' + i : i
+      categories.push(`${monthStr}.${dayStr}`)
+      let fullDayStr = `${this.currentDate}-${dayStr}`
+      let val = this.allMonthRecords
+        .filter(r => r.dateStr === fullDayStr && r.type === this.chartType)
+        .reduce((sum, r) => sum + r.amount, 0)
+
+      values.push(val)
+    }
+    setTimeout(() => {
+      this.drawTrendChart(categories, values)
+    }, 100)
   },
   switchRank(type) {
-      this.rankType = type;
-      // Only update ranking chart, no need to refresh all data
-      this.calculateRanking(this.allMonthRecords);
+    this.rankType = type
+    // Only update ranking chart, no need to refresh all data
+    this.calculateRanking(this.allMonthRecords)
   },
   prevMonth() {
-    const [year, month] = this.currentDate.split('-').map(Number);
-    let newYear = year;
-    let newMonth = month;
-    
+    const [year, month] = this.currentDate.split('-').map(Number)
+    let newYear = year
+    let newMonth = month
+
     if (newMonth === 1) {
-      newYear--;
-      newMonth = 12;
+      newYear--
+      newMonth = 12
     } else {
-      newMonth--;
+      newMonth--
     }
-    
-    this.currentDate = `${newYear}-${newMonth < 10 ? '0' + newMonth : newMonth}`;
-    this.refreshData();
+
+    this.currentDate = `${newYear}-${newMonth < 10 ? '0' + newMonth : newMonth}`
+    this.refreshData()
   },
   nextMonth() {
-    const [year, month] = this.currentDate.split('-').map(Number);
-    let newYear = year;
-    let newMonth = month;
-    
+    const [year, month] = this.currentDate.split('-').map(Number)
+    let newYear = year
+    let newMonth = month
+
     if (newMonth === 12) {
-      newYear++;
-      newMonth = 1;
+      newYear++
+      newMonth = 1
     } else {
-      newMonth++;
+      newMonth++
     }
-    
-    this.currentDate = `${newYear}-${newMonth < 10 ? '0' + newMonth : newMonth}`;
-    this.refreshData();
+
+    this.currentDate = `${newYear}-${newMonth < 10 ? '0' + newMonth : newMonth}`
+    this.refreshData()
   }
 }
 </script>
@@ -613,7 +675,7 @@ export default {
 <style>
 .page {
   flex-direction: column;
-  background-color: #F8F9FA;
+  background-color: #f8f9fa;
   height: 100%;
 }
 
@@ -624,9 +686,9 @@ export default {
 }
 
 .col-wrapper {
-    flex-direction: column;
-    flex: 1;
-    height: 100%;
+  flex-direction: column;
+  flex: 1;
+  height: 100%;
 }
 
 .header-bg {
@@ -636,8 +698,8 @@ export default {
 
 .date-select {
   position: absolute;
-  top: 19px;
-  left: 7px;
+  top: 22px;
+  left: 10px;
   flex-direction: row;
   align-items: center;
   justify-content: flex-start;
@@ -646,31 +708,30 @@ export default {
 .date-text-wrapper {
   flex-direction: row;
   align-items: center;
-  margin: 0 9px;
+  margin: 0 12px;
 }
 
 .arrow-icon {
-  width: 12px;
-  height: 12px;
+  width: 16px;
+  height: 16px;
   object-fit: contain;
 }
 
 .arrow-small {
-  width: 5px;
-  height: 5px;
-  margin-left: 2px;
+  width: 7px;
+  height: 7px;
+  margin-left: 3px;
   object-fit: contain;
 }
 
 .date-text {
-  font-size: 8px;
+  font-size: 11px;
   font-weight: bold;
   color: #333333;
 }
 
 .content {
   flex-direction: column;
-  padding: 0 7px;
   margin-top: -104px;
   width: 100%;
   position: relative;
@@ -679,65 +740,65 @@ export default {
 }
 
 .charts-container {
-    flex-direction: column;
-    padding-bottom: 46px;
+  flex-direction: column;
+  padding-bottom: 46px;
 }
 
 .chart-section {
-    background-color: #ffffff;
-    border-radius: 5px;
-    padding: 7px 0;
-    margin-top: 7px;
-    flex-direction: column;
+  background-color: #ffffff;
+  border-radius: 7px;
+  padding: 10px 0;
+  margin-top: 10px;
+  flex-direction: column;
 }
 
 .trend-section {
-  height: 143px;
+  height: 190px;
   flex-grow: 0;
   flex-shrink: 0;
 }
 
 .section-header {
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 5px;
-    padding: 0 5px;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 7px;
+  padding: 0 8px;
 }
 
 .section-title {
-    font-size: 7px;
-    font-weight: bold;
-    color: #333333;
-    border-left-width: 2px;
-    border-left-color: #FF7064;
-    padding-left: 3px;
+  font-size: 10px;
+  font-weight: bold;
+  color: #333333;
+  border-left-width: 3px;
+  border-left-color: #ff7064;
+  padding-left: 5px;
 }
 
 .switch-btn {
-    flex-direction: row;
-    background-color: #f0f0f0;
-    border-radius: 7px;
-    padding: 1px;
+  flex-direction: row;
+  background-color: #f0f0f0;
+  border-radius: 9px;
+  padding: 2px;
 }
 
 .normal-btn {
-    font-size: 6px;
-    color: #666666;
-    padding: 2px 7px;
+  font-size: 8px;
+  color: #666666;
+  padding: 3px 10px;
 }
 
 .active-btn {
-    font-size: 6px;
-    color: #ffffff;
-    background-color: #FF7064;
-    border-radius: 6px;
-    padding: 2px 7px;
+  font-size: 8px;
+  color: #ffffff;
+  background-color: #ff7064;
+  border-radius: 8px;
+  padding: 3px 10px;
 }
 
 .line-chart {
-  width: 208px;
-  height: 83px;
+  width: 270px;
+  height: 115px;
   align-self: center;
 }
 
@@ -745,62 +806,68 @@ export default {
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 7px;
-  padding: 7px 5px;
-  min-height: 110px;
+  margin-bottom: 0px;
+  padding: 10px 8px;
+  min-height: 150px;
 }
 
 .pie-wrapper {
-    flex: 1;
-    justify-content: center;
-    align-items: center;
+  flex: 1;
+  justify-content: center;
+  align-items: center;
 }
 
 .pie-chart {
-  width: 150px;
-  height: 110px;
+  width: 160px;
+  height: 150px;
 }
 
 .pie-stack {
-  width: 150px;
-  height: 110px;
+  width: 160px;
+  height: 150px;
   position: relative;
 }
 
 .pie-legend {
-    width: 70px;
-    flex-direction: column;
-    justify-content: center;
-    padding-left: 15px;
+  width: 65px;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  align-items: center;
+  padding-left: 3px;
+  margin-left: 8px;
 }
 
 .legend-item {
-    flex-direction: row;
-    align-items: center;
-    margin-bottom: 8px;
+  flex-direction: row;
+  align-items: center;
+  margin-right: 8px;
+  margin-bottom: 6px;
 }
 
 .legend-dot {
-    width: 6px;
-    height: 6px;
-    border-radius: 3px;
-    margin-right: 4px;
+  width: 6px;
+  height: 6px;
+  border-radius: 3px;
+  margin-right: 4px;
 }
 
 .legend-text {
-    font-size: 7px;
-    color: #666666;
+  font-size: 7px;
+  color: #666666;
+  lines: 1;
+  text-overflow: ellipsis;
 }
 
 .pie-center-content {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    justify-content: center;
-    align-items: center;
-    pointer-events: none;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  justify-content: center;
+  align-items: center;
+  pointer-events: none;
 }
 
 .pie-center-text {
@@ -812,76 +879,76 @@ export default {
 
 /* Rank List Styles - Matching Home Page Vibe */
 .rank-list-container {
-    flex-direction: column;
-    padding-top: 10px;
-    padding-left: 10px;
-    padding-right: 10px;
-    padding-bottom: 20px;
+  flex-direction: column;
+  padding-top: 0px;
+  padding-left: 14px;
+  padding-right: 14px;
+  padding-bottom: 26px;
 }
 
 .rank-item {
-    flex-direction: row;
-    align-items: center;
-    margin-bottom: 12px;
+  flex-direction: row;
+  align-items: center;
+  margin-bottom: 16px;
 }
 
 .rank-icon-wrapper {
-    width: 25px;
-    height: 25px;
-    justify-content: center;
-    align-items: center;
-    margin-right: 8px;
-    display: flex;
+  width: 34px;
+  height: 34px;
+  justify-content: center;
+  align-items: center;
+  margin-right: 11px;
+  display: flex;
 }
 
 .rank-icon {
-    width: 20px;
-    height: 20px;
-    object-fit: contain;
+  width: 28px;
+  height: 28px;
+  object-fit: contain;
 }
 
 .rank-info {
-    flex: 1;
-    flex-direction: column;
-    justify-content: center;
+  flex: 1;
+  flex-direction: column;
+  justify-content: center;
 }
 
 .rank-title-row {
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 4px;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 5px;
 }
 
 .rank-name-container {
-    display: none;
+  display: none;
 }
 
 .rank-name {
-    font-size: 8px;
-    color: #333333;
-    font-weight: bold;
+  font-size: 11px;
+  color: #333333;
+  font-weight: bold;
 }
 
 .rank-right-info {
-    display: none;
+  display: none;
 }
 
 .rank-amount {
-    font-size: 8px;
-    font-weight: bold;
-    color: #333333;
+  font-size: 11px;
+  font-weight: bold;
+  color: #333333;
 }
 
 .progress-bar-bg {
-    width: 100%;
-    height: 3.5px;
-    border-radius: 2px;
+  width: 100%;
+  height: 5px;
+  border-radius: 3px;
 }
 
 .progress-bar-fill {
-    height: 100%;
-    border-radius: 2px;
+  height: 100%;
+  border-radius: 3px;
 }
 /* 
 .rank-percent {
@@ -910,27 +977,20 @@ export default {
 }
 */
 
-/* Old legend styles removed if not used, or keep for safety */
-.pie-legend {
-    flex: 1;
-    flex-direction: column;
-    margin-left: 20px;
-}
-
 .card-wrapper {
   width: 100%;
   flex-direction: column;
-  margin-bottom: 7px;
-  height: 83px;
+  margin-bottom: 10px;
+  height: 110px;
   flex-grow: 0;
   flex-shrink: 0;
 }
 
 .card-stack {
-  border-radius: 5px;
+  border-radius: 7px;
   overflow: hidden;
   position: relative;
-  height: 83px;
+  height: 110px;
   flex-grow: 0;
   flex-shrink: 0;
 }
@@ -942,7 +1002,7 @@ export default {
   right: 0;
   bottom: 0;
   filter: blur(7px);
-  background-color: rgba(255,255,255,0.3);
+  background-color: rgba(255, 255, 255, 0.3);
 }
 
 .frost-overlay {
@@ -952,13 +1012,18 @@ export default {
   right: 0;
   bottom: 0;
   /* 白色渐变遮罩，从半透明到不透明 */
-  background: linear-gradient(to bottom, rgba(255, 255, 255, 0.75), rgba(255, 255, 255, 0.9), #ffffff);
+  background: linear-gradient(
+    to bottom,
+    rgba(255, 255, 255, 0.75),
+    rgba(255, 255, 255, 0.9),
+    #ffffff
+  );
 }
 
 .card-content {
   flex-direction: row;
   flex-wrap: wrap;
-  padding: 12px 9px;
+  padding: 16px 12px;
   width: 100%;
   position: relative;
 }
@@ -974,54 +1039,54 @@ export default {
 
 .item-full {
   width: 100%;
-  margin-top: 14px;
+  margin-top: 18px;
 }
 
 .card-label {
-  font-size: 6px;
+  font-size: 8px;
   color: #666666;
-  margin-bottom: 2px;
+  margin-bottom: 3px;
 }
 
 .card-value {
-  font-size: 7px;
+  font-size: 10px;
   font-weight: bold;
 }
 
 .expense {
-  color: #FF4D4F;
+  color: #ff4d4f;
 }
 
 .income {
-  color: #00B578;
+  color: #00b578;
 }
 
 .balance {
   color: #333333;
-  font-size: 9px;
+  font-size: 12px;
 }
 
 .empty-box {
   flex-direction: column;
   align-items: center;
-  margin-top: 7px;
+  margin-top: 10px;
   background-color: #ffffff;
-  border-radius: 5px;
+  border-radius: 7px;
   padding-top: 15%;
-  padding-bottom: 46px;
+  padding-bottom: 60px;
   width: 100%;
   flex: 1;
 }
 
 .empty-img {
-  width: 104px;
-  height: 104px;
+  width: 140px;
+  height: 140px;
   resize-mode: contain;
 }
 
 .empty-text {
   color: #bbbbbb;
-  font-size: 8px;
-  margin-top: 5px;
+  font-size: 11px;
+  margin-top: 7px;
 }
 </style>
