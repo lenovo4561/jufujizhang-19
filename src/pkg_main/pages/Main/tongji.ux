@@ -3,14 +3,14 @@
     <list-item type="main-scroll">
       <div class="col-wrapper">
       <div class="header">
-        <image class="header-bg" src="../../assets/img/shouyedingbg-1.png" resize-mode="cover"></image>
+        <image class="header-bg" src="/pkg_main/assets/img/shouyedingbg-1.png" resize-mode="cover"></image>
         <div class="date-select">
-          <image class="arrow-icon" src="../../assets/img/zuo.png" onclick="prevMonth"></image>
+          <image class="arrow-icon" src="/pkg_main/assets/img/zuo.png" onclick="prevMonth"></image>
           <div class="date-text-wrapper">
             <text class="date-text">{{currentDate}}</text>
-            <image class="arrow-small" src="../../assets/img/jiantou.png"></image>
+            <image class="arrow-small" src="/pkg_main/assets/img/jiantou.png"></image>
           </div>
-          <image class="arrow-icon" src="../../assets/img/you.png" onclick="nextMonth"></image>
+          <image class="arrow-icon" src="/pkg_main/assets/img/you.png" onclick="nextMonth"></image>
         </div>
       </div>
     
@@ -40,7 +40,7 @@
       </div>
       
       <div class="empty-box" if="{{!hasData}}">
-        <image class="empty-img" src="../../assets/img/tongji-kong.png"></image>
+        <image class="empty-img" src="/pkg_main/assets/img/tongji-kong.png"></image>
         <text class="empty-text">当前暂无数据~</text>
       </div>
 
@@ -140,86 +140,6 @@ export default {
       }
   },
   refreshData() {
-      // 模拟数据展示图表效果 (Mock Data)
-      const records = [];
-      const datePrefix = '2026-01-';
-      
-      // 构造类似截图的波动趋势数据 (模拟更多波动)
-      const expensePoints = [
-          54, 58, 62, 65, 63, 60, 59, 120, // 8号突然增高
-          60, 60.5, 60, 59, 58, 57, 58, 
-          90, 63, 65, 66, 64, 60, 58, // 16号增高
-          55, 54, 150, 54, 55, 56, 57, 58, 59 // 25号大额支出
-      ];
-      
-      const categories = [
-        { name: '聚会宴请', color: '#FF6384' },
-        { name: '文化休闲', color: '#36A2EB' },
-        { name: '教育培训', color: '#FFCE56' },
-        { name: '服饰装扮', color: '#4BC0C0' },
-        { name: '其他', color: '#9966FF' }
-      ];
-
-      for (let i = 0; i < 31; i++) {
-          const day = i + 1;
-          const dayStr = day < 10 ? '0' + day : day;
-          
-          // 基础趋势数据 (配合截图的大概数值范围)
-          // 增加随机波动
-          const rawBase = (expensePoints[i % expensePoints.length] || 55);
-          const randomFactor = 0.8 + Math.random() * 0.4; // 0.8 - 1.2
-          const baseAmount = rawBase * 10 * randomFactor; 
-          
-          // 每天生成 2-4 笔支出，让数据更丰富
-          const txCount = 2 + Math.floor(Math.random() * 3);
-          
-          for (let k = 0; k < txCount; k++) {
-              records.push({
-                type: 'expense',
-                amount: (baseAmount / txCount) * (0.8 + Math.random() * 0.4), // 分摊金额并加波动
-                dateStr: datePrefix + dayStr,
-                category: categories[(i + k) % 5].name, // 轮询分类
-                categoryIcon: ''
-              });
-          }
-
-           // 收入数据 - 增加几个收入点
-           if (day === 15) { // 工资日
-               records.push({
-                  type: 'income',
-                  amount: 8000,
-                  dateStr: datePrefix + dayStr,
-                  category: '工资',
-                  categoryIcon: ''
-              });
-           }
-           if (day === 5 || day === 25) { // 兼职/理财
-                records.push({
-                  type: 'income',
-                  amount: 1500 + Math.random() * 500,
-                  dateStr: datePrefix + dayStr,
-                  category: '理财收益',
-                  categoryIcon: ''
-                });
-           }
-      }
-      
-      // 补充特定的分类数据以匹配饼图截图的大致比例
-      // 聚会宴请 (69.93%) -> 需要大量
-      for(let k=0; k<15; k++) { // 增加更多
-         records.push({
-              type: 'expense',
-              amount: 500 + Math.random() * 300,
-              dateStr: '2026-01-15',
-              category: '聚会宴请',
-              categoryIcon: ''
-          });
-      }
-      
-      console.log('Using Mock Data for Chart Preview (Rich Data)');
-      this.processData(records);
-      
-      /* 原有逻辑暂时保留
       storage.get({
           key: 'accounting_records',
           success: (data) => {
@@ -236,7 +156,6 @@ export default {
               this.processData([]);
           }
       })
-      */
   },
 
   processData(records) {
@@ -482,7 +401,7 @@ export default {
       if (!map[r.category]) {
         map[r.category] = {
           amount: 0,
-          icon: r.categoryIcon || '/assets/zhihcu_icon/qitaxiaofei2.png'
+          icon: r.categoryIcon || '/pkg_main/assets/zhihcu_icon/qitaxiaofei2.png'
         }
       }
       map[r.category].amount += r.amount
@@ -706,6 +625,8 @@ export default {
 
 .col-wrapper {
     flex-direction: column;
+    flex: 1;
+    height: 100%;
 }
 
 .header-bg {
@@ -754,6 +675,7 @@ export default {
   width: 100%;
   position: relative;
   z-index: 10;
+  flex: 1;
 }
 
 .charts-container {
@@ -1084,9 +1006,9 @@ export default {
   align-items: center;
   margin-top: 7px;
   background-color: #ffffff;
-  border-top-left-radius: 5px;
-  border-top-right-radius: 5px;
+  border-radius: 5px;
   padding-top: 15%;
+  padding-bottom: 46px;
   width: 100%;
   flex: 1;
 }

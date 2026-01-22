@@ -2,11 +2,11 @@
   <div class="detail-page">
     <!-- Header with Background -->
     <div class="header-bg-wrapper">
-      <image class="header-bg" src="/assets/img/jizhang-bg.png"></image>
+      <image class="header-bg" src="/pkg_main/assets/img/jizhang-bg.png"></image>
       <div class="header-content">
         <div class="nav-bar">
            <div class="back-btn" onclick="goBack">
-               <image class="back-icon" src="/assets/img/zuo.png"></image>
+               <image class="back-icon" src="/pkg_main/assets/img/zuo.png"></image>
            </div>
            <text class="page-title">账单详情</text>
            <div class="placeholder"></div>
@@ -15,7 +15,7 @@
         <!-- Icon Circle -->
         <div class="icon-section">
              <div class="icon-circle">
-                 <image class="category-icon" src="{{record.categoryIcon || (record.type==='income'?'/assets/shouru_icon/qita.png':'/assets/zhihcu_icon/qitaxiaofei2.png')}}"></image>
+                 <image class="category-icon" src="{{record.categoryIcon || (record.type==='income'?'/pkg_main/assets/shouru_icon/qita.png':'/pkg_main/assets/zhihcu_icon/qitaxiaofei2.png')}}"></image>
              </div>
              <text class="category-name">{{record.category}}</text>
         </div>

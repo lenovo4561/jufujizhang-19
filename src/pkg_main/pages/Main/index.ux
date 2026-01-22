@@ -18,7 +18,7 @@
       <div class="tab-item" onclick="clickTab(0)">
         <image
           class="tab-icon"
-          src="{{currentIndex === 0 ? '/assets/img/shouye-s.png' : '/assets/img/shouye-u.png'}}"
+          src="{{currentIndex === 0 ? '/pkg_main/assets/img/shouye-s.png' : '/pkg_main/assets/img/shouye-u.png'}}"
         ></image>
         <text
           class="tab-text"
@@ -29,7 +29,7 @@
       <div class="tab-item" onclick="clickTab(1)">
         <image
           class="tab-icon"
-          src="{{currentIndex === 1 ? '/assets/img/jizhang-s.png' : '/assets/img/jizhang-u.png'}}"
+          src="{{currentIndex === 1 ? '/pkg_main/assets/img/jizhang-s.png' : '/pkg_main/assets/img/jizhang-u.png'}}"
         ></image>
         <text
           class="tab-text"
@@ -40,7 +40,7 @@
       <div class="tab-item" onclick="clickTab(2)">
         <image
           class="tab-icon"
-          src="{{currentIndex === 2 ? '/assets/img/shuju-s.png' : '/assets/img/shuju-u.png'}}"
+          src="{{currentIndex === 2 ? '/pkg_main/assets/img/shuju-s.png' : '/pkg_main/assets/img/shuju-u.png'}}"
         ></image>
         <text
           class="tab-text"
@@ -51,7 +51,7 @@
       <div class="tab-item" onclick="clickTab(3)">
         <image
           class="tab-icon"
-          src="{{currentIndex === 3 ? '/assets/img/mine-s.png' : '/assets/img/mine-u.png'}}"
+          src="{{currentIndex === 3 ? '/pkg_main/assets/img/mine-s.png' : '/pkg_main/assets/img/mine-u.png'}}"
         ></image>
         <text
           class="tab-text"

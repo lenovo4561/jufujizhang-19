@@ -1,0 +1,759 @@
+<template>
+  <div class="jizhang-page">
+    <!-- Header Background Wrapper -->
+    <div class="header-bg-wrapper">
+      <image class="top-bg" src="/pkg_main/assets/img/xiangqing-bg.png"></image>
+      <div class="fog-layer"></div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="content-wrapper">
+      
+      <!-- Type Switcher (Expenditure/Income) -->
+      <div class="type-switch">
+        <div class="type-item" onclick="switchType('expense')">
+          <text class="type-text {{currentType === 'expense' ? 'active-text' : ''}}">支出</text>
+          <div class="type-indicator" if="{{currentType === 'expense'}}"></div>
+        </div>
+        <div class="type-item" onclick="switchType('income')">
+          <text class="type-text {{currentType === 'income' ? 'active-text' : ''}}">收入</text>
+          <div class="type-indicator" if="{{currentType === 'income'}}"></div>
+        </div>
+      </div>
+
+      <!-- Category Grid -->
+      <div class="category-container">
+        <div class="category-stack">
+          <!-- 模糊背景层 -->
+          <div class="blur-layer"></div>
+          <!-- 白色渐变遮罩 -->
+          <div class="frost-overlay"></div>
+          <!-- 分类内容 - 可滚动 -->
+          <list class="category-content-scroll">
+            <block for="{{currentCategoryGroups}}">
+              <list-item type="category-group" class="category-group-item">
+                <div class="category-group">
+                  <text class="group-title">{{$item.title}}</text>
+                  <div class="category-wrapper">
+                    <block for="{{$item.items}}">
+                      <div class="category-item" onclick="selectCategory($item)">
+                        <div class="icon-circle {{selectedCategory === $item.name ? 'selected-icon-bg' : ''}}">
+                          <image src="{{$item.icon}}" class="category-icon"></image> 
+                        </div>
+                        <text class="category-name {{selectedCategory === $item.name ? 'selected-text' : ''}}">{{$item.name}}</text>
+                      </div>
+                    </block>
+                  </div>
+                </div>
+              </list-item>
+            </block>
+          </list>
+        </div>
+      </div>
+
+      <!-- Input Area & Keyboard -->
+      <div class="bottom-panel">
+        <!-- Note and Amount Input -->
+        <div class="input-row">
+            <div class="note-input-wrapper">
+                <input class="note-input" type="text" placeholder="点击添加备注" value="{{note}}" onchange="onNoteChange"></input>
+            </div>
+            <text class="currency-symbol">¥</text>
+            <text class="amount-text">{{amount || '0.00'}}</text>
+        </div>
+
+        <!-- Keypad -->
+        <div class="keyboard">
+            <div class="key-row">
+                <div class="key-cell" onclick="onKeyPress('1')"><text class="key-num">1</text></div>
+                <div class="key-cell" onclick="onKeyPress('2')"><text class="key-num">2</text><text class="key-sub">ABC</text></div>
+                <div class="key-cell" onclick="onKeyPress('3')"><text class="key-num">3</text><text class="key-sub">DEF</text></div>
+            </div>
+            <div class="key-row">
+                <div class="key-cell" onclick="onKeyPress('4')"><text class="key-num">4</text><text class="key-sub">GHI</text></div>
+                <div class="key-cell" onclick="onKeyPress('5')"><text class="key-num">5</text><text class="key-sub">JKL</text></div>
+                <div class="key-cell" onclick="onKeyPress('6')"><text class="key-num">6</text><text class="key-sub">MNO</text></div>
+            </div>
+            <div class="key-row">
+                <div class="key-cell" onclick="onKeyPress('7')"><text class="key-num">7</text><text class="key-sub">PQRS</text></div>
+                <div class="key-cell" onclick="onKeyPress('8')"><text class="key-num">8</text><text class="key-sub">TUV</text></div>
+                <div class="key-cell" onclick="onKeyPress('9')"><text class="key-num">9</text><text class="key-sub">WXYZ</text></div>
+            </div>
+            <div class="key-row">
+                <div class="key-cell" onclick="onKeyPress('0')"><text class="key-num">0</text></div>
+                <div class="key-cell" onclick="onKeyPress('.')"><text class="key-num">.</text></div>
+                <div class="key-cell" onclick="onKeyPress('del')"><image src="/pkg_main/assets/img/dele.png" class="del-icon"></image></div>s
+            </div>
+            <div class="key-row footer-row">
+                <div class="date-btn">
+                     <text class="date-text">今日</text>
+                </div>
+                <div class="submit-btn" onclick="submitRecord">
+                    <text class="submit-text">记一笔</text>
+                </div>
+            </div>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+</template>
+
+
+<script>
+import storage from '@system.storage'
+import prompt from '@system.prompt'
+import router from '@system.router'
+
+export default {
+  data: {
+    currentType: 'expense', // 'expense' or 'income'
+    amount: '',
+    note: '',
+    selectedCategory: '日常三餐',
+    selectedCategoryIcon: '/pkg_main/assets/zhihcu_icon/canyin.png',
+    expenseCategoryGroups: [
+      {
+        title: '餐饮',
+        items: [
+          { name: '日常三餐', icon: '/pkg_main/assets/zhihcu_icon/canyin.png' }, 
+          { name: '零食饮料', icon: '/pkg_main/assets/zhihcu_icon/lingshi.png' }, 
+          { name: '外卖点餐', icon: '/pkg_main/assets/zhihcu_icon/waimai.png' }, 
+          { name: '聚餐宴请', icon: '/pkg_main/assets/zhihcu_icon/yanqing2.png' }, 
+          { name: '食材采购', icon: '/pkg_main/assets/zhihcu_icon/shucai.png' },
+          { name: '水果生鲜', icon: '/pkg_main/assets/zhihcu_icon/shuiguo.png' }, 
+          { name: '甜品糕点', icon: '/pkg_main/assets/zhihcu_icon/shipin2.png' }, 
+          { name: '酒水茶饮', icon: '/pkg_main/assets/zhihcu_icon/shipin2.png' }, 
+          { name: '其他餐饮', icon: '/pkg_main/assets/zhihcu_icon/qitacanyin.png' }
+        ]
+      },
+      {
+        title: '消费',
+        items: [
+          { name: '服饰鞋包', icon: '/pkg_main/assets/zhihcu_icon/fushi2.png' }, 
+          { name: '美妆护肤', icon: '/pkg_main/assets/zhihcu_icon/meizhuanghufu2.png' }, 
+          { name: '数码家电', icon: '/pkg_main/assets/zhihcu_icon/shumajiadian2.png' }, 
+          { name: '日用品', icon: '/pkg_main/assets/zhihcu_icon/riyongpin2.png' }, 
+          { name: '母婴用品', icon: '/pkg_main/assets/zhihcu_icon/muying2.png' },
+          { name: '图书文具', icon: '/pkg_main/assets/zhihcu_icon/tushu2.png' }, 
+          { name: '宠物用品', icon: '/pkg_main/assets/zhihcu_icon/chongwuyongpin.png' }, 
+          { name: '饰品配件', icon: '/pkg_main/assets/zhihcu_icon/shipin2.png' }, 
+          { name: '其他消费', icon: '/pkg_main/assets/zhihcu_icon/qitaxiaofei2.png' }
+        ]
+      },
+      {
+        title: '出行',
+        items: [
+          { name: '公共交通', icon: '/pkg_main/assets/zhihcu_icon/ggjt2.png' }, 
+          { name: '打车费用', icon: '/pkg_main/assets/zhihcu_icon/dache2.png' }, 
+          { name: '自驾开销', icon: '/pkg_main/assets/zhihcu_icon/zijia2.png' }, 
+          { name: '火车高铁', icon: '/pkg_main/assets/zhihcu_icon/huochegaotie2.png' }, 
+          { name: '飞机出行', icon: '/pkg_main/assets/zhihcu_icon/feiji2.png' },
+          { name: '共享单车', icon: '/pkg_main/assets/zhihcu_icon/gxdc2.png' }, 
+          { name: '长途汽车', icon: '/pkg_main/assets/zhihcu_icon/ctqc2.png' }, 
+          { name: '交通罚款', icon: '/pkg_main/assets/zhihcu_icon/jiatongfakuan2.png' }, 
+          { name: '其他出行', icon: '/pkg_main/assets/zhihcu_icon/qitachuxing2.png' }
+        ]
+      },
+      {
+        title: '娱乐',
+        items: [
+          { name: '影视观影', icon: '/pkg_main/assets/zhihcu_icon/guanying2.png' }, 
+          { name: '游戏消费', icon: '/pkg_main/assets/zhihcu_icon/youxi2.png' }, 
+          { name: '休闲娱乐', icon: '/pkg_main/assets/zhihcu_icon/xiuxianyule2.png' }, 
+          { name: '旅游度假', icon: '/pkg_main/assets/zhihcu_icon/lvyoudujia2.png' }, 
+          { name: '运动健身', icon: '/pkg_main/assets/zhihcu_icon/yundongjianshen2.png' },
+          { name: '演出赛事', icon: '/pkg_main/assets/zhihcu_icon/yanchusaishi2.png' }, 
+          { name: '桌游卡牌', icon: '/pkg_main/assets/zhihcu_icon/zuoyou2.png' }, 
+          { name: '兴趣爱好', icon: '/pkg_main/assets/zhihcu_icon/xingquaihao2.png' }, 
+          { name: '其他娱乐', icon: '/pkg_main/assets/zhihcu_icon/qitayule2.png' }
+        ]
+      },
+      {
+        title: '居家',
+        items: [
+          { name: '房租支出', icon: '/pkg_main/assets/zhihcu_icon/fangzu2.png' }, 
+          { name: '水电燃气', icon: '/pkg_main/assets/zhihcu_icon/shuifei2.png' }, 
+          { name: '物业费', icon: '/pkg_main/assets/zhihcu_icon/wuyefei2.png' }, 
+          { name: '家具家电', icon: '/pkg_main/assets/zhihcu_icon/jiaju2.png' }, 
+          { name: '房屋维修', icon: '/pkg_main/assets/zhihcu_icon/fangwuweixiu2.png' },
+          { name: '家居装饰', icon: '/pkg_main/assets/zhihcu_icon/jiajuzhuangshi2.png' }, 
+          { name: '网络通讯', icon: '/pkg_main/assets/zhihcu_icon/wangluo2.png' }, 
+          { name: '快递物流', icon: '/pkg_main/assets/zhihcu_icon/kuaidi2.png' }, 
+          { name: '其他居家', icon: '/pkg_main/assets/zhihcu_icon/qitajujia2.png' }
+        ]
+      },
+      {
+        title: '人情',
+        items: [
+          { name: '红包礼金', icon: '/pkg_main/assets/zhihcu_icon/hongbaolijin2.png' }, 
+          { name: '礼物赠送', icon: '/pkg_main/assets/zhihcu_icon/liwu2.png' }, 
+          { name: '人情宴请', icon: '/pkg_main/assets/zhihcu_icon/yanqing2.png' }, 
+          { name: '互助借款', icon: '/pkg_main/assets/zhihcu_icon/huzhujiekuan2.png' }, 
+          { name: '慈善捐款', icon: '/pkg_main/assets/zhihcu_icon/cishanjunkuan2.png' },
+          { name: '亲友资助', icon: '/pkg_main/assets/zhihcu_icon/qinyouzizhu2.png' }, 
+          { name: '同学聚会', icon: '/pkg_main/assets/zhihcu_icon/tongxuejuhui2.png' }, 
+          { name: '邻里往来', icon: '/pkg_main/assets/zhihcu_icon/linliwanglai2.png' }, 
+          { name: '其他人情', icon: '/pkg_main/assets/zhihcu_icon/qitarenqing2.png' }
+        ]
+      },
+      {
+        title: '健康',
+        items: [
+          { name: '医院就诊', icon: '/pkg_main/assets/zhihcu_icon/yiyuanjiuzhen2.png' }, 
+          { name: '药品购买', icon: '/pkg_main/assets/zhihcu_icon/yaopin2.png' }, 
+          { name: '体检费用', icon: '/pkg_main/assets/zhihcu_icon/tijian2.png' }, 
+          { name: '牙科护理', icon: '/pkg_main/assets/zhihcu_icon/yake2.png' }, 
+          { name: '养生保健', icon: '/pkg_main/assets/zhihcu_icon/yangsheng.png' },
+          { name: '眼镜护理', icon: '/pkg_main/assets/zhihcu_icon/yanjinghuli2.png' }, 
+          { name: '医疗器材', icon: '/pkg_main/assets/zhihcu_icon/yiliaoqixie2.png' }, 
+          { name: '疫苗接种', icon: '/pkg_main/assets/zhihcu_icon/yimiao2.png' }, 
+          { name: '其他健康', icon: '/pkg_main/assets/zhihcu_icon/qitajiankang2.png' }
+        ]
+      },
+      {
+        title: '特殊',
+        items: [
+          { name: '学习培训', icon: '/pkg_main/assets/zhihcu_icon/xuexipeixun2.png' }, 
+          { name: '工作开销', icon: '/pkg_main/assets/zhihcu_icon/gongzuokaixiao.png' }, 
+          { name: '税费支出', icon: '/pkg_main/assets/zhihcu_icon/shuifei2.png' }, 
+          { name: '投资亏损', icon: '/pkg_main/assets/zhihcu_icon/touzikuisun2.png' }, 
+          { name: '意外支出', icon: '/pkg_main/assets/zhihcu_icon/yiwaisunshi.png' },
+          { name: '借贷还款', icon: '/pkg_main/assets/zhihcu_icon/jiedai2.png' }, 
+          { name: '会员订阅', icon: '/pkg_main/assets/zhihcu_icon/huiyuan2.png' }, 
+          { name: '不明支出', icon: '/pkg_main/assets/zhihcu_icon/zhichu2.png' }, 
+          { name: '其他特殊', icon: '/pkg_main/assets/zhihcu_icon/qitateshu2.png' }
+        ]
+      },
+      {
+        title: '其他',
+        items: [
+          { name: '其他', icon: '/pkg_main/assets/zhihcu_icon/zhichu2.png' }
+        ]
+      }
+    ],
+    incomeCategoryGroups: [
+      {
+        title: '收入',
+        items: [
+          { name: '工资', icon: '/pkg_main/assets/shouru_icon/gongzi.png' }, 
+          { name: '兼职', icon: '/pkg_main/assets/shouru_icon/jianzhi.png' }, 
+          { name: '投资', icon: '/pkg_main/assets/shouru_icon/touzi.png' }, 
+          { name: '租金', icon: '/pkg_main/assets/shouru_icon/zujin1.png' }, 
+          { name: '出售', icon: '/pkg_main/assets/shouru_icon/chushou.png' },
+          { name: '奖金', icon: '/pkg_main/assets/shouru_icon/jiangjin.png' }, 
+          { name: '补贴', icon: '/pkg_main/assets/shouru_icon/butie.png' }, 
+          { name: '捐赠', icon: '/pkg_main/assets/shouru_icon/juanzeng.png' }, 
+          { name: '理赔', icon: '/pkg_main/assets/shouru_icon/lipei.png' }, 
+          { name: '利息', icon: '/pkg_main/assets/shouru_icon/lixi.png' },
+          { name: '分红', icon: '/pkg_main/assets/shouru_icon/touzi.png' }, 
+          { name: '退款', icon: '/pkg_main/assets/shouru_icon/tuikuan.png' }, 
+          { name: '礼金', icon: '/pkg_main/assets/shouru_icon/lijin.png' }, 
+          { name: '转账', icon: '/pkg_main/assets/shouru_icon/zhuanzhang.png' }, 
+          { name: '其他', icon: '/pkg_main/assets/shouru_icon/qita.png' }
+        ]
+      }
+    ],
+    currentCategoryGroups: [
+      {
+        title: '餐饮',
+        items: [
+          { name: '日常三餐', icon: '/pkg_main/assets/zhihcu_icon/canyin.png' }, 
+          { name: '零食饮料', icon: '/pkg_main/assets/zhihcu_icon/lingshi.png' }, 
+          { name: '外卖点餐', icon: '/pkg_main/assets/zhihcu_icon/waimai-2.png' }, 
+          { name: '聚餐宴请', icon: '/pkg_main/assets/zhihcu_icon/waimai.png' }, 
+          { name: '食材采购', icon: '/pkg_main/assets/zhihcu_icon/shucai.png' },
+          { name: '水果生鲜', icon: '/pkg_main/assets/zhihcu_icon/shuiguo.png' }, 
+          { name: '甜品糕点', icon: '/pkg_main/assets/zhihcu_icon/shuiguo-2.png' }, 
+          { name: '酒水茶饮', icon: '/pkg_main/assets/zhihcu_icon/shuiguo-3.png' }, 
+          { name: '其他餐饮', icon: '/pkg_main/assets/zhihcu_icon/qitacanyin.png' }
+        ]
+      },
+      {
+        title: '消费',
+        items: [
+          { name: '服饰鞋包', icon: '/pkg_main/assets/zhihcu_icon/fushi2.png' }, 
+          { name: '美妆护肤', icon: '/pkg_main/assets/zhihcu_icon/meizhuanghufu2.png' }, 
+          { name: '数码家电', icon: '/pkg_main/assets/zhihcu_icon/shumajiadian2.png' }, 
+          { name: '日用品', icon: '/pkg_main/assets/zhihcu_icon/riyongpin2.png' }, 
+          { name: '母婴用品', icon: '/pkg_main/assets/zhihcu_icon/muying2.png' },
+          { name: '图书文具', icon: '/pkg_main/assets/zhihcu_icon/tushu2.png' }, 
+          { name: '宠物用品', icon: '/pkg_main/assets/zhihcu_icon/chongwuyongpin.png' }, 
+          { name: '饰品配件', icon: '/pkg_main/assets/zhihcu_icon/fushi2.png' }, 
+          { name: '其他消费', icon: '/pkg_main/assets/zhihcu_icon/qitaxiaofei2.png' }
+        ]
+      },
+      {
+        title: '出行',
+        items: [
+          { name: '公共交通', icon: '/pkg_main/assets/zhihcu_icon/ggjt2.png' }, 
+          { name: '打车费用', icon: '/pkg_main/assets/zhihcu_icon/dache2.png' }, 
+          { name: '自驾开销', icon: '/pkg_main/assets/zhihcu_icon/zijia2.png' }, 
+          { name: '火车高铁', icon: '/pkg_main/assets/zhihcu_icon/huochegaotie2.png' }, 
+          { name: '飞机出行', icon: '/pkg_main/assets/zhihcu_icon/feiji2.png' },
+          { name: '共享单车', icon: '/pkg_main/assets/zhihcu_icon/gxdc2.png' }, 
+          { name: '长途汽车', icon: '/pkg_main/assets/zhihcu_icon/ctqc2.png' }, 
+          { name: '交通罚款', icon: '/pkg_main/assets/zhihcu_icon/jiatongfakuan2.png' }, 
+          { name: '其他出行', icon: '/pkg_main/assets/zhihcu_icon/qitachuxing2.png' }
+        ]
+      },
+      {
+        title: '娱乐',
+        items: [
+          { name: '影视观影', icon: '/pkg_main/assets/zhihcu_icon/guanying2.png' }, 
+          { name: '游戏消费', icon: '/pkg_main/assets/zhihcu_icon/youxi2.png' }, 
+          { name: '休闲娱乐', icon: '/pkg_main/assets/zhihcu_icon/xiuxianyule2.png' }, 
+          { name: '旅游度假', icon: '/pkg_main/assets/zhihcu_icon/lvyoudujia2.png' }, 
+          { name: '运动健身', icon: '/pkg_main/assets/zhihcu_icon/yundongjianshen2.png' },
+          { name: '演出赛事', icon: '/pkg_main/assets/zhihcu_icon/yanchusaishi2.png' }, 
+          { name: '桌游卡牌', icon: '/pkg_main/assets/zhihcu_icon/zuoyou2.png' }, 
+          { name: '兴趣爱好', icon: '/pkg_main/assets/zhihcu_icon/xingquaihao2.png' }, 
+          { name: '其他娱乐', icon: '/pkg_main/assets/zhihcu_icon/qitayule2.png' }
+        ]
+      },
+      {
+        title: '居家',
+        items: [
+          { name: '房租支出', icon: '/pkg_main/assets/zhihcu_icon/fangzu2.png' }, 
+          { name: '水电燃气', icon: '/pkg_main/assets/zhihcu_icon/shuifei2.png' }, 
+          { name: '物业费', icon: '/pkg_main/assets/zhihcu_icon/wuyefei2.png' }, 
+          { name: '家具家电', icon: '/pkg_main/assets/zhihcu_icon/jiaju2.png' }, 
+          { name: '房屋维修', icon: '/pkg_main/assets/zhihcu_icon/fangwuweixiu2.png' },
+          { name: '家居装饰', icon: '/pkg_main/assets/zhihcu_icon/jiajuzhuangshi2.png' }, 
+          { name: '网络通讯', icon: '/pkg_main/assets/zhihcu_icon/wangluo2.png' }, 
+          { name: '快递物流', icon: '/pkg_main/assets/zhihcu_icon/kuaidi2.png' }, 
+          { name: '其他居家', icon: '/pkg_main/assets/zhihcu_icon/qitajujia2.png' }
+        ]
+      },
+      {
+        title: '人情',
+        items: [
+          { name: '红包礼金', icon: '/pkg_main/assets/zhihcu_icon/hongbaolijin2.png' }, 
+          { name: '礼物赠送', icon: '/pkg_main/assets/zhihcu_icon/liwu2.png' }, 
+          { name: '人情宴请', icon: '/pkg_main/assets/zhihcu_icon/yanqing2.png' }, 
+          { name: '互助借款', icon: '/pkg_main/assets/zhihcu_icon/huzhujiekuan2.png' }, 
+          { name: '慈善捐款', icon: '/pkg_main/assets/zhihcu_icon/cishanjunkuan2.png' },
+          { name: '亲友资助', icon: '/pkg_main/assets/zhihcu_icon/qinyouzizhu2.png' }, 
+          { name: '同学聚会', icon: '/pkg_main/assets/zhihcu_icon/tongxuejuhui2.png' }, 
+          { name: '邻里往来', icon: '/pkg_main/assets/zhihcu_icon/linliwanglai2.png' }, 
+          { name: '其他人情', icon: '/pkg_main/assets/zhihcu_icon/qitarenqing2.png' }
+        ]
+      },
+      {
+        title: '健康',
+        items: [
+          { name: '医院就诊', icon: '/pkg_main/assets/zhihcu_icon/yiyuanjiuzhen2.png' }, 
+          { name: '药品购买', icon: '/pkg_main/assets/zhihcu_icon/yaopin2.png' }, 
+          { name: '体检费用', icon: '/pkg_main/assets/zhihcu_icon/tijian2.png' }, 
+          { name: '牙科护理', icon: '/pkg_main/assets/zhihcu_icon/yake2.png' }, 
+          { name: '养生保健', icon: '/pkg_main/assets/zhihcu_icon/yangsheng.png' },
+          { name: '眼镜护理', icon: '/pkg_main/assets/zhihcu_icon/yanjinghuli2.png' }, 
+          { name: '医疗器材', icon: '/pkg_main/assets/zhihcu_icon/yiliaoqixie2.png' }, 
+          { name: '疫苗接种', icon: '/pkg_main/assets/zhihcu_icon/yimiao2.png' }, 
+          { name: '其他健康', icon: '/pkg_main/assets/zhihcu_icon/qitajiankang2.png' }
+        ]
+      },
+      {
+        title: '特殊',
+        items: [
+          { name: '学习培训', icon: '/pkg_main/assets/zhihcu_icon/xuexipeixun2.png' }, 
+          { name: '工作开销', icon: '/pkg_main/assets/zhihcu_icon/gongzuokaixiao.png' }, 
+          { name: '税费支出', icon: '/pkg_main/assets/zhihcu_icon/shuifei2.png' }, 
+          { name: '投资亏损', icon: '/pkg_main/assets/zhihcu_icon/touzikuisun2.png' }, 
+          { name: '意外支出', icon: '/pkg_main/assets/zhihcu_icon/yiwaisunshi.png' },
+          { name: '借贷还款', icon: '/pkg_main/assets/zhihcu_icon/jiedai2.png' }, 
+          { name: '会员订阅', icon: '/pkg_main/assets/zhihcu_icon/huiyuan2.png' }, 
+          { name: '不明支出', icon: '/pkg_main/assets/zhihcu_icon/zhichu2.png' }, 
+          { name: '其他特殊', icon: '/pkg_main/assets/zhihcu_icon/qitateshu2.png' }
+        ]
+      },
+      {
+        title: '其他',
+        items: [
+          { name: '其他', icon: '/pkg_main/assets/zhihcu_icon/zhichu2.png' }
+        ]
+      }
+    ]
+  },
+  onInit() {
+  },
+  switchType(type) {
+    this.currentType = type;
+    if (type === 'expense') {
+      this.currentCategoryGroups = this.expenseCategoryGroups;
+    } else {
+      this.currentCategoryGroups = this.incomeCategoryGroups;
+    }
+    if(this.currentCategoryGroups.length > 0 && this.currentCategoryGroups[0].items.length > 0) {
+        this.selectedCategory = this.currentCategoryGroups[0].items[0].name;
+        this.selectedCategoryIcon = this.currentCategoryGroups[0].items[0].icon;
+    }
+  },
+  selectCategory(item) {
+    this.selectedCategory = item.name;
+    this.selectedCategoryIcon = item.icon;
+  },
+  onNoteChange(e) {
+    this.note = e.value;
+  },
+  onKeyPress(key) {
+    if (key === 'del') {
+      this.amount = this.amount.slice(0, -1);
+    } else if (key === '.') {
+      if (this.amount.indexOf('.') === -1) {
+         this.amount += key;
+      }
+    } else {
+      if (this.amount === '0' && key !== '.') {
+          this.amount = key;
+      } else {
+          this.amount += key;
+      }
+    }
+  },
+  submitRecord() {
+    if (!this.amount || parseFloat(this.amount) === 0) {
+      prompt.showToast({ message: '请输入金额' })
+      return
+    }
+
+    const record = {
+      categoryIcon: this.selectedCategoryIcon,
+      type: this.currentType,
+      category: this.selectedCategory,
+      amount: parseFloat(this.amount),
+      note: this.note,
+      date: new Date().getTime(), // Store timestamp
+      dateStr: new Date().toISOString().split('T')[0] // Simple date string
+    }
+
+    storage.get({
+      key: 'accounting_records',
+      success: (data) => {
+        let records = []
+        if (data) {
+          try {
+            records = JSON.parse(data)
+          } catch (e) {
+            console.error('Parse records failed', e)
+          }
+        }
+        records.push(record)
+        
+        storage.set({
+          key: 'accounting_records',
+          value: JSON.stringify(records),
+          success: () => {
+             prompt.showToast({ message: '记账成功' })
+             // Clear inputs
+             this.amount = ''
+             this.note = ''
+             // Go back to home or stay? User didn't specify. Stay for now.
+             // Maybe notify other tabs?
+             // Since tabs are in same context (Main), we might need to use a global event or simply reload on `onShow` in other tabs.
+          },
+          fail: (data, code) => {
+            prompt.showToast({ message: '保存失败' })
+          }
+        })
+      },
+      fail: (data, code) => {
+         // Should try to set if get fails? Maybe first time.
+         let records = [record]
+         storage.set({
+            key: 'accounting_records',
+            value: JSON.stringify(records),
+            success: () => {
+                prompt.showToast({ message: '记账成功' })
+                this.amount = ''
+                this.note = ''
+            }
+         })
+      }
+    })
+  }
+}
+</script>
+
+<style>
+.jizhang-page {
+  flex-direction: column;
+  background-color: #f5f5f5;
+  height: 100%;
+  position: relative;
+}
+
+.header-bg-wrapper {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+}
+
+.top-bg {
+  width: 100%;
+}
+
+.fog-layer {
+  position: absolute;
+  top: 0px; 
+  left: 0;
+  width: 100%;
+  height: 100%;
+  /* Simulating fog with gradient overlay */
+  background: linear-gradient(to bottom, rgba(255,255,255,0.0), rgba(255,255,255,0.7));
+}
+
+.content-wrapper {
+  flex: 1;
+  flex-direction: column;
+  /* Ensure content is above bg */
+}
+
+/* Tabs */
+.type-switch {
+  flex-direction: row;
+  height: 23px;
+  align-items: center;
+  padding-left: 9px;
+  margin-top: 14px;
+}
+.type-item {
+  flex-direction: column;
+  align-items: center;
+  margin-right: 12px;
+}
+.type-text {
+  font-size: 7px;
+  color: #333333;
+  margin-bottom: 2px;
+}
+.active-text {
+  font-weight: bold;
+  font-size: 9px;
+}
+.type-indicator {
+  width: 9px;
+  height: 1px;
+  background-color: #000000;
+  border-radius: 1px;
+}
+
+/* Categories */
+.category-container {
+  margin-top: 9px;
+  padding-left: 7px;
+  padding-right: 7px;
+  padding-bottom: 5px;
+  height: 241px;
+}
+
+.category-stack {
+  border-radius: 5px;
+  overflow: hidden;
+}
+
+.blur-layer {
+  position: absolute;
+  top: -12px;
+  left: -12px;
+  right: -12px;
+  bottom: -12px;
+  filter: blur(7px);
+}
+
+.frost-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(to bottom, rgba(255, 255, 255, 0.75), rgba(255, 255, 255, 0.9), #ffffff);
+}
+
+.category-content-scroll {
+  flex-direction: column;
+  background-color: transparent;
+  border-radius: 5px;
+}
+
+.category-group-item {
+  flex-direction: column;
+}
+
+.category-group {
+  flex-direction: column;
+  padding: 7px 5px 5px 5px;
+  margin-bottom: 9px;
+}
+
+.group-title {
+  font-size: 7px;
+  color: #333333;
+  font-weight: bold;
+  margin-bottom: 5px;
+  margin-left: 2px;
+}
+
+.category-wrapper {
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+}
+
+.category-item {
+  width: 20%; /* 5 items per row */
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 9px;
+}
+
+.icon-circle {
+  width: 23px;
+  height: 23px;
+  border-radius: 12px;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 3px;
+}
+
+.selected-icon-bg {
+  border-width: 1px;
+  border-color: #000000;
+}
+
+.category-icon {
+  width: 21px;
+  height: 21px;
+}
+
+.category-name {
+  font-size: 6px;
+  color: #666666;
+  text-align: center;
+}
+
+.selected-text {
+  color: #333333;
+  font-weight: bold;
+}
+
+/* Bottom Panel */
+.bottom-panel {
+  flex-direction: column;
+  background-color: #ffffff;
+  border-top-left-radius: 7px;
+  border-top-right-radius: 7px;
+  padding-top: 5px;
+  padding-bottom: 46px;  margin-top: -2px;  elevation: 10px; /* Shadow effect */
+}
+
+.input-row {
+  flex-direction: row;
+  align-items: center;
+  padding: 7px 9px;
+  border-bottom-width: 1px;
+  border-bottom-color: #f0f0f0;
+}
+.note-input-wrapper {
+  flex: 1;
+  border-left-width: 1px;
+  border-left-color: #CCFF00; /* Neon green accent from screenshot */
+  padding-left: 2px;
+}
+.note-input {
+  font-size: 7px;
+  width: 100%;
+}
+.currency-symbol {
+  font-size: 12px;
+  color: #000000;
+  font-weight: bold;
+  margin-right: 2px;
+}
+.amount-text {
+  font-size: 14px;
+  color: #000000;
+  font-weight: bold;
+}
+
+/* Keyboard */
+.keyboard {
+  flex-direction: column;
+  padding: 3px;
+  background-color: #F7F8FA;
+}
+.key-row {
+  flex-direction: row;
+  margin-bottom: 3px;
+}
+.key-cell {
+  flex: 1;
+  height: 28px;
+  background-color: #ffffff;
+  border-radius: 3px;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  margin-left: 2px;
+  margin-right: 2px;
+  box-shadow: 0px 1px 2px rgba(0,0,0,0.05);
+}
+
+.key-num {
+  font-size: 11px;
+  color: #000000;
+  font-weight: bold;
+}
+.key-sub {
+  font-size: 5px;
+  color: #999999;
+  margin-top: -1px; /* Pull closer */
+}
+.del-icon {
+    width: 12px;
+    height: 12px;
+    object-fit: contain;
+}
+
+.footer-row {
+  margin-top: 2px;
+  margin-bottom: 7px;
+}
+.date-btn {
+  width: 25%;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  background-color: #ffffff;
+  border-radius: 3px;
+  margin-left: 2px;
+  margin-right: 2px;
+  height: 28px;
+}
+.date-icon {
+    width: 9px;
+    height: 9px;
+    margin-right: 2px;
+}
+.date-text {
+    font-size: 7px;
+    color: #333333;
+}
+.submit-btn {
+  flex: 1; 
+  height: 28px;
+  background-color: #FF7064;
+  border-radius: 3px; 
+  justify-content: center;
+  align-items: center;
+  margin-left: 2px;
+  margin-right: 2px;
+}
+.submit-text {
+  font-size: 9px;
+  color: #ffffff;
+  font-weight: bold;
+}
+</style>

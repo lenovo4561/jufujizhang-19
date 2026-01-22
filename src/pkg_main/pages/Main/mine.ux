@@ -2,9 +2,9 @@
   <div class="page">
     <!-- 顶部背景与个人信息 -->
     <stack class="header-container">
-      <image class="header-bg" src="/assets/img/wodebg.png"></image>
+      <image class="header-bg" src="/pkg_main/assets/img/wodebg.png"></image>
       <div class="user-info">
-        <image class="avatar" src="/assets/img/tx.png"></image>
+        <image class="avatar" src="/pkg_main/assets/img/tx.png"></image>
         <text class="username">郑文锦</text>
       </div>
     </stack>
@@ -16,10 +16,10 @@
       <!-- 用户协议 -->
       <div class="service-item" onclick="openAgreement">
         <div class="item-left">
-          <image class="item-icon" src="/assets/img/yonghu.png"></image>
+          <image class="item-icon" src="/pkg_main/assets/img/yonghu.png"></image>
           <text class="item-text">用户协议</text>
         </div>
-        <image class="arrow-icon" src="/assets/img/jiantou.png"></image>
+        <image class="arrow-icon" src="/pkg_main/assets/img/jiantou.png"></image>
       </div>
       
       <div class="divider"></div>
@@ -27,10 +27,10 @@
       <!-- 隐私政策 -->
       <div class="service-item" onclick="openPrivacy">
         <div class="item-left">
-          <image class="item-icon" src="/assets/img/yinsizhengce-1.png"></image>
+          <image class="item-icon" src="/pkg_main/assets/img/yinsizhengce-1.png"></image>
           <text class="item-text">隐私政策</text>
         </div>
-        <image class="arrow-icon" src="/assets/img/jiantou.png"></image>
+        <image class="arrow-icon" src="/pkg_main/assets/img/jiantou.png"></image>
       </div>
     </div>
   </div>
@@ -49,7 +49,7 @@ export default {
   },
   openAgreement() {
     router.push({
-      uri: 'pages/Web',
+      uri: '/pkg_main/pages/Web',
       params: {
         url: this.agreementUrl,
         title: '用户协议'
@@ -58,7 +58,7 @@ export default {
   },
   openPrivacy() {
     router.push({
-      uri: 'pages/Web',
+      uri: '/pkg_main/pages/Web',
       params: {
         url: this.privacyUrl,
         title: '隐私政策'
@@ -153,16 +153,16 @@ export default {
 }
 
 .arrow-icon {
-  width: 14px;
-  height: 14px;
-  opacity: 0.6;
+  width: 18px;
+  height: 18px;
+  opacity: 0.8;
   resize-mode: contain;
 }
 
 .divider {
   height: 1px;
   background-color: #f0f0f0;
-  margin-left: 20px;
-  width: 100%;
+  width: 205px;
+  align-self: center;
 }
 </style>

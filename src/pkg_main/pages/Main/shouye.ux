@@ -2,19 +2,19 @@
   <div class="shouye-page">
     <!-- 顶部背景 -->
     <div class="bg-container">
-       <image class="bg-img" src="/assets/img/shouyedingbg.png"></image>
+       <image class="bg-img" src="/pkg_main/assets/img/shouyedingbg.png"></image>
     </div>
 
     <!-- 头部内容区 -->
     <div class="header-content">
       <!-- 年月选择 -->
       <div class="date-selector">
-        <image class="arrow-icon" src="/assets/img/zuo.png" onclick="prevMonth"></image>
+        <image class="arrow-icon" src="/pkg_main/assets/img/zuo.png" onclick="prevMonth"></image>
         <div class="date-text-wrapper">
              <text class="date-text">{{currentYear}}-{{currentMonth < 10 ? '0' + currentMonth : currentMonth}}</text>
-             <image class="arrow-small" src="/assets/img/jiantou.png"></image>
+             <image class="arrow-small" src="/pkg_main/assets/img/jiantou.png"></image>
         </div>
-        <image class="arrow-icon" src="/assets/img/you.png" onclick="nextMonth"></image>
+        <image class="arrow-icon" src="/pkg_main/assets/img/you.png" onclick="nextMonth"></image>
       </div>
       
       <!-- 日历卡片 -->
@@ -74,7 +74,7 @@
              <div class="record-item" onclick="toDetail($item)">
                  <!-- Icon -->
                  <div class="icon-wrapper">
-                    <image class="item-icon" src="{{$item.categoryIcon || '/assets/zhihcu_icon/qitaxiaofei2.png'}}"></image>
+                    <image class="item-icon" src="{{$item.categoryIcon || '/pkg_main/assets/zhihcu_icon/qitaxiaofei2.png'}}"></image>
                  </div>
                  <!-- Middle -->
                  <div class="item-info">
@@ -93,14 +93,14 @@
 
        <!-- 空状态 -->
        <div class="empty-view" else>
-          <image class="empty-img" src="/assets/img/kong.png"></image>
+          <image class="empty-img" src="/pkg_main/assets/img/kong.png"></image>
           <text class="empty-text">当前暂无数据~</text>
        </div>
     </div>
     
     <!-- 悬浮按钮 -->
     <div class="fab-btn" if="{{isActive}}" onclick="goToJizhang">
-       <image class="fab-icon" src="/assets/img/jizhang.png"></image> 
+       <image class="fab-icon" src="/pkg_main/assets/img/jizhang.png"></image> 
     </div>
 
   </div>
@@ -182,7 +182,7 @@ export default {
   toDetail(item) {
       // Navigate to Detail page, passing record string
       router.push({
-          uri: 'pages/Detail',
+          uri: '/pkg_main/pages/Detail',
           params: {
               recordStr: JSON.stringify(item)
           }

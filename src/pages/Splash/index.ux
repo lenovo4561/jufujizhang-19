@@ -1,12 +1,12 @@
 <template>
   <div class="splash-container">
     <!-- 背景图 -->
-    <image class="bg-image" src="/assets/img/shangdian-bg.png"></image>
+    <image class="bg-image" src="/pkg_main/assets/img/shangdian-bg.png"></image>
     
     <!-- Logo容器 -->
     <div class="logo-container">
-      <image class="logo" src="/assets/img/loading-icon-1.png"></image>
-      <image class="app-name-img" src="/assets/img/jfjz.png"></image>
+      <image class="logo" src="/pkg_main/assets/img/loading-icon-1.png"></image>
+      <image class="app-name-img" src="/pkg_main/assets/img/jfjz.png"></image>
     </div>
 
     <!-- 隐私协议弹窗 -->
@@ -95,7 +95,7 @@ export default {
   },
   openPrivacy() {
     router.push({
-      uri: 'pages/Web',
+      uri: '/pkg_main/pages/Web',
       params: {
         url: 'https://api.51dsp.cn/index/privacy.do?pn=com.jvfujizhangcl.jfjz',
         title: '隐私政策'
@@ -104,7 +104,7 @@ export default {
   },
   openAgreement() {
     router.push({
-      uri: 'pages/Web',
+      uri: '/pkg_main/pages/Web',
       params: {
         url: 'https://api.51dsp.cn/index/agreement.do?pn=com.jvfujizhangcl.jfjz',
         title: '用户协议'
@@ -125,7 +125,7 @@ export default {
   },
   navigateToHome() {
     router.replace({
-      uri: '/pages/Main'
+      uri: '/pkg_main/pages/Main'
     })
   }
 }
