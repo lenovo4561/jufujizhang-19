@@ -36,7 +36,7 @@
   "template/official": "demo-template",
   "config": {
     "logLevel": "debug",
-    "designWidth": 1080
+    "designWidth": 250
   },
   "router": {
     "entry": "pages/Splash",

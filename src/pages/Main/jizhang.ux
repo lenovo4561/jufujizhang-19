@@ -515,53 +515,53 @@ export default {
 /* Tabs */
 .type-switch {
   flex-direction: row;
-  height: 100px;
+  height: 23px;
   align-items: center;
-  padding-left: 40px;
-  margin-top: 60px; /* Approx status bar area */
+  padding-left: 9px;
+  margin-top: 14px;
 }
 .type-item {
   flex-direction: column;
   align-items: center;
-  margin-right: 50px;
+  margin-right: 12px;
 }
 .type-text {
-  font-size: 32px;
+  font-size: 7px;
   color: #333333;
-  margin-bottom: 8px;
+  margin-bottom: 2px;
 }
 .active-text {
   font-weight: bold;
-  font-size: 38px;
+  font-size: 9px;
 }
 .type-indicator {
-  width: 40px;
-  height: 6px;
+  width: 9px;
+  height: 1px;
   background-color: #000000;
-  border-radius: 3px;
+  border-radius: 1px;
 }
 
 /* Categories */
 .category-container {
-  margin-top: 40px;
-  padding-left: 30px;
-  padding-right: 30px;
-  padding-bottom: 20px;
-  height: 1040px;
+  margin-top: 9px;
+  padding-left: 7px;
+  padding-right: 7px;
+  padding-bottom: 5px;
+  height: 241px;
 }
 
 .category-stack {
-  border-radius: 20px;
+  border-radius: 5px;
   overflow: hidden;
 }
 
 .blur-layer {
   position: absolute;
-  top: -50px;
-  left: -50px;
-  right: -50px;
-  bottom: -50px;
-  filter: blur(30px);
+  top: -12px;
+  left: -12px;
+  right: -12px;
+  bottom: -12px;
+  filter: blur(7px);
 }
 
 .frost-overlay {
@@ -576,7 +576,7 @@ export default {
 .category-content-scroll {
   flex-direction: column;
   background-color: transparent;
-  border-radius: 20px;
+  border-radius: 5px;
 }
 
 .category-group-item {
@@ -585,16 +585,16 @@ export default {
 
 .category-group {
   flex-direction: column;
-  padding: 30px 20px 20px 20px;
-  margin-bottom: 40px;
+  padding: 7px 5px 5px 5px;
+  margin-bottom: 9px;
 }
 
 .group-title {
-  font-size: 32px;
+  font-size: 7px;
   color: #333333;
   font-weight: bold;
-  margin-bottom: 20px;
-  margin-left: 10px;
+  margin-bottom: 5px;
+  margin-left: 2px;
 }
 
 .category-wrapper {
@@ -607,30 +607,30 @@ export default {
   width: 20%; /* 5 items per row */
   flex-direction: column;
   align-items: center;
-  margin-bottom: 40px;
+  margin-bottom: 9px;
 }
 
 .icon-circle {
-  width: 100px;
-  height: 100px;
-  border-radius: 50px;
+  width: 23px;
+  height: 23px;
+  border-radius: 12px;
   justify-content: center;
   align-items: center;
-  margin-bottom: 15px;
+  margin-bottom: 3px;
 }
 
 .selected-icon-bg {
-  border-width: 4px;
+  border-width: 1px;
   border-color: #000000;
 }
 
 .category-icon {
-  width: 90px;
-  height: 90px;
+  width: 21px;
+  height: 21px;
 }
 
 .category-name {
-  font-size: 26px;
+  font-size: 6px;
   color: #666666;
   text-align: center;
 }
@@ -644,37 +644,37 @@ export default {
 .bottom-panel {
   flex-direction: column;
   background-color: #ffffff;
-  border-top-left-radius: 30px;
-  border-top-right-radius: 30px;
-  padding-top: 20px;
-  padding-bottom: 200px;  margin-top: -10px;  elevation: 10px; /* Shadow effect */
+  border-top-left-radius: 7px;
+  border-top-right-radius: 7px;
+  padding-top: 5px;
+  padding-bottom: 46px;  margin-top: -2px;  elevation: 10px; /* Shadow effect */
 }
 
 .input-row {
   flex-direction: row;
   align-items: center;
-  padding: 30px 40px;
+  padding: 7px 9px;
   border-bottom-width: 1px;
   border-bottom-color: #f0f0f0;
 }
 .note-input-wrapper {
   flex: 1;
-  border-left-width: 4px;
+  border-left-width: 1px;
   border-left-color: #CCFF00; /* Neon green accent from screenshot */
-  padding-left: 10px;
+  padding-left: 2px;
 }
 .note-input {
-  font-size: 30px;
+  font-size: 7px;
   width: 100%;
 }
 .currency-symbol {
-  font-size: 50px;
+  font-size: 12px;
   color: #000000;
   font-weight: bold;
-  margin-right: 10px;
+  margin-right: 2px;
 }
 .amount-text {
-  font-size: 60px;
+  font-size: 14px;
   color: #000000;
   font-weight: bold;
 }
@@ -682,45 +682,45 @@ export default {
 /* Keyboard */
 .keyboard {
   flex-direction: column;
-  padding: 15px;
+  padding: 3px;
   background-color: #F7F8FA;
 }
 .key-row {
   flex-direction: row;
-  margin-bottom: 15px;
+  margin-bottom: 3px;
 }
 .key-cell {
   flex: 1;
-  height: 120px;
+  height: 28px;
   background-color: #ffffff;
-  border-radius: 15px;
+  border-radius: 3px;
   justify-content: center;
   align-items: center;
   flex-direction: column;
-  margin-left: 10px;
-  margin-right: 10px;
+  margin-left: 2px;
+  margin-right: 2px;
   box-shadow: 0px 1px 2px rgba(0,0,0,0.05);
 }
 
 .key-num {
-  font-size: 48px;
+  font-size: 11px;
   color: #000000;
   font-weight: bold;
 }
 .key-sub {
-  font-size: 22px;
+  font-size: 5px;
   color: #999999;
-  margin-top: -5px; /* Pull closer */
+  margin-top: -1px; /* Pull closer */
 }
 .del-icon {
-    width: 50px;
-    height: 50px;
+    width: 12px;
+    height: 12px;
     object-fit: contain;
 }
 
 .footer-row {
-  margin-top: 10px;
-  margin-bottom: 30px;
+  margin-top: 2px;
+  margin-bottom: 7px;
 }
 .date-btn {
   width: 25%;
@@ -728,32 +728,32 @@ export default {
   justify-content: center;
   align-items: center;
   background-color: #ffffff;
-  border-radius: 15px;
-  margin-left: 10px;
-  margin-right: 10px;
-  height: 120px;
+  border-radius: 3px;
+  margin-left: 2px;
+  margin-right: 2px;
+  height: 28px;
 }
 .date-icon {
-    width: 40px;
-    height: 40px;
-    margin-right: 10px;
+    width: 9px;
+    height: 9px;
+    margin-right: 2px;
 }
 .date-text {
-    font-size: 32px;
+    font-size: 7px;
     color: #333333;
 }
 .submit-btn {
   flex: 1; 
-  height: 120px;
+  height: 28px;
   background-color: #FF7064;
-  border-radius: 15px; 
+  border-radius: 3px; 
   justify-content: center;
   align-items: center;
-  margin-left: 10px;
-  margin-right: 10px;
+  margin-left: 2px;
+  margin-right: 2px;
 }
 .submit-text {
-  font-size: 40px;
+  font-size: 9px;
   color: #ffffff;
   font-weight: bold;
 }

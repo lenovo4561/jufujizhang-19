@@ -67,11 +67,19 @@
                   </div>
               </div>
               <div class="pie-container">
-                  <div class="pie-stack">
-                      <canvas id="pieChart" class="pie-chart"></canvas>
-                      <div class="pie-center-content">
-                           <text class="pie-center-text">100</text>
+                  <div class="pie-wrapper">
+                      <div class="pie-stack">
+                          <canvas id="pieChart" class="pie-chart"></canvas>
                       </div>
+                  </div>
+                  <!-- 右侧图例 -->
+                  <div class="pie-legend">
+                      <block for="{{rankingList}}">
+                          <div class="legend-item">
+                              <div class="legend-dot" style="background-color: {{$item.color}};"></div>
+                              <text class="legend-text">{{$item.category}}</text>
+                          </div>
+                      </block>
                   </div>
               </div>
               
@@ -79,20 +87,20 @@
               <div class="rank-list-container">
                   <block for="{{rankingList}}">
                     <div class="rank-item">
+                        <!-- 图标 -->
                         <div class="rank-icon-wrapper">
                              <image class="rank-icon" src="{{$item.icon}}"></image>
                         </div>
+                        
+                        <!-- 进度条和信息 -->
                         <div class="rank-info">
                             <div class="rank-title-row">
-                                <text class="rank-name">{{$item.category}}</text>
-                                <text class="rank-percent">{{$item.percent}}%</text>
+                                <text class="rank-name">{{$item.category}} {{$item.percent}}%</text>
+                                <text class="rank-amount">-¥{{$item.amount}}</text>
                             </div>
-                            <div class="progress-bar-bg">
-                                <div class="progress-bar-fill" style="width: {{$item.percent}}%; background-color: {{$item.color}};"></div>
+                            <div class="progress-bar-bg" style="background-color: rgba(255, 99, 132, 0.2);"> 
+                                <div class="progress-bar-fill" style="width: {{$item.percent}}%; background-color: #FF6384;"></div>
                             </div>
-                        </div>
-                        <div class="rank-amount-wrapper">
-                            <text class="rank-amount">-¥{{$item.amount}}</text>
                         </div>
                     </div>
                   </block>
@@ -108,7 +116,6 @@
 <script>
 import storage from '@system.storage'
 import router from '@system.router'
-import Charts from 'apex-ui/components/charts/qacharts.js'
 
 export default {
   props: ['isActive'],
@@ -133,7 +140,86 @@ export default {
       }
   },
   refreshData() {
-      // Called by parent or self
+      // 模拟数据展示图表效果 (Mock Data)
+      const records = [];
+      const datePrefix = '2026-01-';
+      
+      // 构造类似截图的波动趋势数据 (模拟更多波动)
+      const expensePoints = [
+          54, 58, 62, 65, 63, 60, 59, 120, // 8号突然增高
+          60, 60.5, 60, 59, 58, 57, 58, 
+          90, 63, 65, 66, 64, 60, 58, // 16号增高
+          55, 54, 150, 54, 55, 56, 57, 58, 59 // 25号大额支出
+      ];
+      
+      const categories = [
+        { name: '聚会宴请', color: '#FF6384' },
+        { name: '文化休闲', color: '#36A2EB' },
+        { name: '教育培训', color: '#FFCE56' },
+        { name: '服饰装扮', color: '#4BC0C0' },
+        { name: '其他', color: '#9966FF' }
+      ];
+
+      for (let i = 0; i < 31; i++) {
+          const day = i + 1;
+          const dayStr = day < 10 ? '0' + day : day;
+          
+          // 基础趋势数据 (配合截图的大概数值范围)
+          // 增加随机波动
+          const rawBase = (expensePoints[i % expensePoints.length] || 55);
+          const randomFactor = 0.8 + Math.random() * 0.4; // 0.8 - 1.2
+          const baseAmount = rawBase * 10 * randomFactor; 
+          
+          // 每天生成 2-4 笔支出，让数据更丰富
+          const txCount = 2 + Math.floor(Math.random() * 3);
+          
+          for (let k = 0; k < txCount; k++) {
+              records.push({
+                type: 'expense',
+                amount: (baseAmount / txCount) * (0.8 + Math.random() * 0.4), // 分摊金额并加波动
+                dateStr: datePrefix + dayStr,
+                category: categories[(i + k) % 5].name, // 轮询分类
+                categoryIcon: ''
+              });
+          }
+
+           // 收入数据 - 增加几个收入点
+           if (day === 15) { // 工资日
+               records.push({
+                  type: 'income',
+                  amount: 8000,
+                  dateStr: datePrefix + dayStr,
+                  category: '工资',
+                  categoryIcon: ''
+              });
+           }
+           if (day === 5 || day === 25) { // 兼职/理财
+                records.push({
+                  type: 'income',
+                  amount: 1500 + Math.random() * 500,
+                  dateStr: datePrefix + dayStr,
+                  category: '理财收益',
+                  categoryIcon: ''
+                });
+           }
+      }
+      
+      // 补充特定的分类数据以匹配饼图截图的大致比例
+      // 聚会宴请 (69.93%) -> 需要大量
+      for(let k=0; k<15; k++) { // 增加更多
+         records.push({
+              type: 'expense',
+              amount: 500 + Math.random() * 300,
+              dateStr: '2026-01-15',
+              category: '聚会宴请',
+              categoryIcon: ''
+          });
+      }
+      
+      console.log('Using Mock Data for Chart Preview (Rich Data)');
+      this.processData(records);
+      
+      /* 原有逻辑暂时保留
       storage.get({
           key: 'accounting_records',
           success: (data) => {
@@ -150,20 +236,34 @@ export default {
               this.processData([]);
           }
       })
+      */
   },
 
   processData(records) {
     if (!records || records.length === 0) {
       this.hasData = false
+      this.totalExpense = 0
+      this.totalIncome = 0
+      this.balance = 0
       return
     }
-    this.hasData = true
 
     // Filter by month (Mock for now, using all data or current month)
     // Assuming currentDate is 'YYYY-MM'
     const filtered = records.filter((r) =>
       r.dateStr.startsWith(this.currentDate)
     )
+
+    // 检查过滤后的数据是否为空
+    if (filtered.length === 0) {
+      this.hasData = false
+      this.totalExpense = 0
+      this.totalIncome = 0
+      this.balance = 0
+      return
+    }
+    
+    this.hasData = true
 
     let exp = 0
     let inc = 0
@@ -186,11 +286,13 @@ export default {
     const daysInMonth = new Date(year, month, 0).getDate()
     const categories = []
     const values = []
+    const monthStr = month < 10 ? '0' + month : month
     for (let i = 1; i <= daysInMonth; i++) {
-      categories.push(`${i < 10 ? '0' + i : i}`)
-      let dayStr = `${this.currentDate}-${i < 10 ? '0' + i : i}`
+      const dayStr = i < 10 ? '0' + i : i
+      categories.push(`${monthStr}.${dayStr}`)
+      let fullDayStr = `${this.currentDate}-${dayStr}`
       let val = filtered
-        .filter((r) => r.dateStr === dayStr && r.type === this.chartType)
+        .filter((r) => r.dateStr === fullDayStr && r.type === this.chartType)
         .reduce((sum, r) => sum + r.amount, 0)
 
       values.push(val)
@@ -203,60 +305,170 @@ export default {
   },
   drawTrendChart(categories, values) {
     if (!this.$element('lineChart')) return
-    const element = this.$element('lineChart')
+    const canvas = this.$element('lineChart')
+    const ctx = canvas.getContext('2d')
     const chartColor = this.chartType === 'expense' ? '#FF7064' : '#4CAF50'
-    const chartName = this.chartType === 'expense' ? '支出' : '收入'
+    const chartRgb = this.chartType === 'expense' ? '255, 112, 100' : '76, 175, 80'
+    const chartName = this.chartType === 'expense' ? '支出变化' : '收入变化'
+    
+    // 增加底部padding用于图例
+    const width = 208
+    const height = 83
+    const padding = { left: 22, right: 8, top: 12, bottom: 25 }
+    const chartWidth = width - padding.left - padding.right
+    const chartHeight = height - padding.top - padding.bottom
+    
+    // 清空画布
+    ctx.clearRect(0, 0, width, height)
+    
+    // 找出最大值用于Y轴缩放
+    const maxValue = Math.max(...values, 1)
+    const yStep = Math.ceil(maxValue / 4)
+    const yMax = yStep * 4
+    
+    // 绘制Y轴网格线和标签
+    ctx.strokeStyle = '#f5f5f5' // 更淡的网格线
+    ctx.lineWidth = 0.5
+    ctx.font = '6px sans-serif'
+    ctx.fillStyle = '#999999'
+    ctx.textAlign = 'right'
+    ctx.textBaseline = 'middle'
+    
+    for (let i = 0; i <= 4; i++) {
+      const y = padding.top + chartHeight - (chartHeight / 4) * i
+      // 绘制虚线网格
+      ctx.setLineDash([2, 2])
+      ctx.beginPath()
+      ctx.moveTo(padding.left, y)
+      ctx.lineTo(width - padding.right, y)
+      ctx.stroke()
+      
+      // Y轴标签
+      const yValue = (yMax / 4) * i
+      ctx.fillText(yValue.toFixed(0), padding.left - 2, y)
+    }
+    
+    ctx.setLineDash([])
+    
+    // 绘制X轴标签（抽样显示，避免太密集）
+    ctx.textAlign = 'center'
+    ctx.textBaseline = 'top'
+    ctx.font = '5.5px sans-serif'
+    ctx.fillStyle = '#999999'
+    const step = Math.ceil(categories.length / 6) // 控制标签密度
+    for (let i = 0; i < categories.length; i += step) {
+      const x = padding.left + (chartWidth / (categories.length - 1)) * i
+      ctx.fillText(categories[i], x, height - padding.bottom + 4) // 稍微下移
+    }
 
-    new Charts({
-      element: element,
-      width: 750,
-      height: 350,
-      xAxis: {
-        type: 'category',
-        data: categories,
-        axisLabel: {
-          show: true,
-          color: '#999999',
-          fontSize: 20
-        },
-        axisLine: { show: false },
-        axisTick: { show: false }
-      },
-      yAxis: {
-        type: 'value',
-        axisLine: { show: false },
-        axisTick: { show: false },
-        splitLine: {
-          show: true,
-          lineStyle: { color: '#eeeeee', type: 'dashed' }
+    // 绘制下划线（X轴）
+    ctx.strokeStyle = '#eeeeee'
+    ctx.beginPath()
+    ctx.moveTo(padding.left, height - padding.bottom)
+    ctx.lineTo(width - padding.right, height - padding.bottom)
+    ctx.stroke()
+    
+    // 绘制折线和面积
+    if (values.length > 0) {
+      // 计算点的坐标
+      const points = values.map((val, idx) => ({
+        x: padding.left + (chartWidth / Math.max(values.length - 1, 1)) * idx,
+        y: padding.top + chartHeight - (val / yMax) * chartHeight
+      }))
+      
+      // 绘制渐变区域
+      const gradient = ctx.createLinearGradient(0, padding.top, 0, height - padding.bottom)
+      // 使用rgba以兼容真机，避免Hex透明度解析错误导致颜色异常
+      gradient.addColorStop(0, `rgba(${chartRgb}, 0.85)`)
+      gradient.addColorStop(1, 'rgba(255, 255, 255, 0)') 
+      
+      ctx.fillStyle = gradient
+      ctx.beginPath()
+      ctx.moveTo(points[0].x, height - padding.bottom)
+      
+      if (points.length === 1) {
+        ctx.lineTo(points[0].x, points[0].y)
+      } else {
+        // 使用更加平滑的曲线算法
+        ctx.lineTo(points[0].x, points[0].y)
+        for (let i = 0; i < points.length - 1; i++) {
+           const curr = points[i]
+           const next = points[i + 1]
+           const cx = (curr.x + next.x) / 2
+           // 贝塞尔曲线控制点
+           // 使用中点作为控制点的一种简化平滑
+           ctx.bezierCurveTo(cx, curr.y, cx, next.y, next.x, next.y)
         }
-      },
-      series: [
-        {
-          type: 'line',
-          data: values,
-          smooth: true,
-          name: chartName,
-          lineStyle: {
-            lineWidth: 3,
-            color: chartColor
-          },
-          area: {
-            show: true,
-            color: {
-              linearGradient: [0, 0, 0, 1],
-              colors: [
-                { offset: 0, color: chartColor },
-                { offset: 1, color: '#ffffff' }
-              ]
-            }
-          },
-          itemStyle: {
-            color: chartColor
-          }
+      }
+      
+      ctx.lineTo(points[points.length - 1].x, height - padding.bottom)
+      ctx.closePath()
+      ctx.fill()
+      
+      // 绘制折线
+      ctx.strokeStyle = '#333333' // 黑色线条，参考截图
+      ctx.lineWidth = 0.8 // 线条变细
+      ctx.lineCap = 'round'
+      ctx.lineJoin = 'round'
+      ctx.beginPath()
+      
+      if (points.length === 1) {
+        ctx.moveTo(points[0].x, points[0].y)
+        ctx.lineTo(points[0].x, points[0].y)
+      } else {
+        ctx.moveTo(points[0].x, points[0].y)
+        for (let i = 0; i < points.length - 1; i++) {
+           const curr = points[i]
+           const next = points[i + 1]
+           const cx = (curr.x + next.x) / 2
+           ctx.bezierCurveTo(cx, curr.y, cx, next.y, next.x, next.y)
         }
-      ]
-    })
+      }
+      ctx.stroke()
+      
+      // 绘制数据点 (空心圆)
+      ctx.fillStyle = '#ffffff'
+      ctx.strokeStyle = '#333333' // 深色边框
+      ctx.lineWidth = 0.6 // 描边变细
+      points.forEach((p, index) => {
+        // 只在峰顶或特定间隔画点可能更像截图，但全部画也行
+        if (index % step === 0 || values[index] > yMax * 0.8 ) { // 简单抽样画点
+            ctx.beginPath()
+            // 确保值为0时，圆圈贴合X轴
+            const yPos = values[index] === 0 ? (height - padding.bottom) : p.y
+            ctx.arc(p.x, yPos, 1.8, 0, Math.PI * 2) // 圆点变小 (2.5 -> 1.8)
+            ctx.fill()
+            ctx.stroke()
+        }
+      })
+    }
+    
+    // 绘制图例
+    const legendY = height - 5
+    const legendX = width / 2
+    
+    ctx.beginPath()
+    ctx.strokeStyle = '#333333'
+    ctx.lineWidth = 1
+    ctx.moveTo(legendX - 25, legendY)
+    ctx.lineTo(legendX - 7, legendY)
+    ctx.stroke()
+    
+    // 图例上的圆圈
+    ctx.fillStyle = '#ffffff'
+    ctx.strokeStyle = '#333333'
+    ctx.lineWidth = 1
+    ctx.beginPath()
+    ctx.arc(legendX - 16, legendY, 2, 0, Math.PI * 2)
+    ctx.fill()
+    ctx.stroke()
+    
+    // 图例文字
+    ctx.fillStyle = '#666666'
+    ctx.font = '6px sans-serif'
+    ctx.textAlign = 'left'
+    ctx.textBaseline = 'middle'
+    ctx.fillText(chartName, legendX - 2, legendY)
   },
   calculateRanking(records) {
     const type = this.rankType
@@ -286,7 +498,7 @@ export default {
       }))
       .sort((a, b) => b.amount - a.amount)
 
-    const colors = ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF']
+    const colors = ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF', '#FF9F40', '#8BC34A', '#03A9F4', '#E91E63', '#9E9E9E']
     this.rankingList = list.slice(0, 5).map((item, idx) => ({
       ...item,
       percent: total > 0 ? ((item.amount / total) * 100).toFixed(1) : 0,
@@ -300,37 +512,125 @@ export default {
       .map(item => ({
         value: parseFloat(item.percent),
         name: item.category,
-        itemStyle: { color: item.color }
+        color: item.color
       }));
 
     setTimeout(() => {
-      if (!this.$element('pieChart')) return
-      const element = this.$element('pieChart')
-      
-      new Charts({
-          element: element,
-          width: 690,
-          height: 560,
-          series: [{
-              type: 'pie',
-              center: ['50%', '50%'],
-              radius: ['30%', '50%'],
-              data: pieData,
-              avoidLabelOverlap: true,
-              label: { 
-                show: true,
-                fontSize: 24,
-                formatter: '{b}\n{c}%'
-              },
-              labelLine: { 
-                show: true,
-                length: 15,
-                length2: 10
-              }
-          }]
-      });
+      this.drawPieChart(pieData);
     }, 100)
   },
+  
+  drawPieChart(data) {
+    if (!this.$element('pieChart')) return
+    const canvas = this.$element('pieChart')
+    const ctx = canvas.getContext('2d')
+    
+    // Canvas dimensions (match CSS .pie-chart)
+    const width = 150
+    const height = 110
+    const centerX = width / 2
+    const centerY = height / 2
+    
+    // 调整半径
+    const outerRadius = 28
+    const innerRadius = 15
+    
+    // 清空画布
+    ctx.clearRect(0, 0, width, height)
+    
+    // 绘制中间的文字 100
+    ctx.fillStyle = '#000000'
+    ctx.font = 'bold 9px sans-serif'
+    ctx.textAlign = 'center'
+    ctx.textBaseline = 'middle'
+    ctx.fillText('100', centerX, centerY)
+
+    if (data.length === 0) return
+    
+    const total = data.reduce((sum, item) => sum + item.value, 0)
+    let currentAngle = -Math.PI / 2
+    
+    data.forEach((item, index) => {
+      const sliceAngle = (item.value / total) * Math.PI * 2
+      const endAngle = currentAngle + sliceAngle
+      const midAngle = currentAngle + sliceAngle / 2
+      
+      // 绘制扇形
+      // 使用描边方式绘制圆环，避免单个数据时圆心被填满的问题
+      const midRadius = (outerRadius + innerRadius) / 2
+      const thickness = outerRadius - innerRadius
+      
+      ctx.beginPath()
+      ctx.arc(centerX, centerY, midRadius, currentAngle, endAngle)
+      
+      ctx.strokeStyle = item.color
+      ctx.lineWidth = thickness
+      // 解决Android/Canvas上有时出现的连接处缝隙问题，但对于单个圆环不影响
+      // ctx.lineCap = 'butt' 
+      ctx.stroke()
+      
+      // 绘制指示线和标签
+      // 只有当前扇区足够大时才显示标签
+      if (item.value > 2.0) { 
+        const isRight = Math.cos(midAngle) >= 0
+        const lineLen1 = 6
+        const lineLen2 = 8
+        
+        const r1 = outerRadius + 1
+        const x1 = centerX + Math.cos(midAngle) * r1
+        const y1 = centerY + Math.sin(midAngle) * r1
+        
+        const r2 = outerRadius + lineLen1
+        const x2 = centerX + Math.cos(midAngle) * r2
+        const y2 = centerY + Math.sin(midAngle) * r2
+        
+        // 限制y2坐标，防止跑出画布
+        // y2 = Math.max(5, Math.min(height - 5, y2));
+        
+        let x3 = isRight ? x2 + lineLen2 : x2 - lineLen2
+        // 防止标签跑出画布
+        if (isRight && x3 > width - 2) x3 = width - 2
+        if (!isRight && x3 < 2) x3 = 2
+        
+        const y3 = y2
+        
+        // 绘制折线
+        ctx.strokeStyle = item.color
+        ctx.lineWidth = 0.5
+        ctx.beginPath()
+        ctx.moveTo(x1, y1)
+        ctx.lineTo(x2, y2)
+        ctx.lineTo(x3, y3)
+        ctx.stroke()
+        
+        // 绘制文字
+        ctx.textAlign = isRight ? 'left' : 'right'
+        const textPad = 2
+        
+        // 第一行：类别名 (使用更小的字体适应小画布)
+        ctx.fillStyle = '#666666' 
+        ctx.font = '5px sans-serif'
+        ctx.textBaseline = 'bottom'
+        // x3 作为基准
+        const tx = isRight ? x3 + textPad : x3 - textPad
+        // 如果靠边缘太近，向内挤一下
+        let drawX = tx
+        if (isRight && drawX > width - 10) drawX = width - 10
+        if (!isRight && drawX < 10) drawX = 10
+
+        ctx.fillText(item.name, drawX, y3 - 0.5)
+        
+        // 第二行：数值
+        ctx.fillStyle = item.color
+        ctx.font = 'bold 5px sans-serif'
+        ctx.textBaseline = 'top'
+        ctx.fillText(item.value.toFixed(2), drawX, y3 + 0.5)
+      }
+      
+      currentAngle = endAngle
+    })
+  },
+  
   switchChart(type) {
       this.chartType = type;
       // Only update trend chart
@@ -338,11 +638,13 @@ export default {
       const daysInMonth = new Date(year, month, 0).getDate()
       const categories = []
       const values = []
+      const monthStr = month < 10 ? '0' + month : month
       for (let i = 1; i <= daysInMonth; i++) {
-        categories.push(`${i < 10 ? '0' + i : i}`)
-        let dayStr = `${this.currentDate}-${i < 10 ? '0' + i : i}`
+        const dayStr = i < 10 ? '0' + i : i
+        categories.push(`${monthStr}.${dayStr}`)
+        let fullDayStr = `${this.currentDate}-${dayStr}`
         let val = this.allMonthRecords
-          .filter((r) => r.dateStr === dayStr && r.type === this.chartType)
+          .filter((r) => r.dateStr === fullDayStr && r.type === this.chartType)
           .reduce((sum, r) => sum + r.amount, 0)
         
         values.push(val)
@@ -413,8 +715,8 @@ export default {
 
 .date-select {
   position: absolute;
-  top: 80px;
-  left: 30px;
+  top: 19px;
+  left: 7px;
   flex-direction: row;
   align-items: center;
   justify-content: flex-start;
@@ -423,32 +725,32 @@ export default {
 .date-text-wrapper {
   flex-direction: row;
   align-items: center;
-  margin: 0 40px;
+  margin: 0 9px;
 }
 
 .arrow-icon {
-  width: 50px;
-  height: 50px;
+  width: 12px;
+  height: 12px;
   object-fit: contain;
 }
 
 .arrow-small {
-  width: 20px;
-  height: 20px;
-  margin-left: 10px;
+  width: 5px;
+  height: 5px;
+  margin-left: 2px;
   object-fit: contain;
 }
 
 .date-text {
-  font-size: 36px;
+  font-size: 8px;
   font-weight: bold;
   color: #333333;
 }
 
 .content {
   flex-direction: column;
-  padding: 0 30px;
-  margin-top: -450px; /* 向上移动更多以叠加到背景上 */
+  padding: 0 7px;
+  margin-top: -104px;
   width: 100%;
   position: relative;
   z-index: 10;
@@ -456,19 +758,19 @@ export default {
 
 .charts-container {
     flex-direction: column;
-    padding-bottom: 200px;
+    padding-bottom: 46px;
 }
 
 .chart-section {
     background-color: #ffffff;
-    border-radius: 20px;
-    padding: 30px 0;
-    margin-top: 30px;
+    border-radius: 5px;
+    padding: 7px 0;
+    margin-top: 7px;
     flex-direction: column;
 }
 
 .trend-section {
-  height: 530px;
+  height: 143px;
   flex-grow: 0;
   flex-shrink: 0;
 }
@@ -477,64 +779,95 @@ export default {
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 20px;
-    padding: 0 20px;
+    margin-bottom: 5px;
+    padding: 0 5px;
 }
 
 .section-title {
-    font-size: 32px;
+    font-size: 7px;
     font-weight: bold;
     color: #333333;
-    border-left-width: 8px;
+    border-left-width: 2px;
     border-left-color: #FF7064;
-    padding-left: 15px;
+    padding-left: 3px;
 }
 
 .switch-btn {
     flex-direction: row;
     background-color: #f0f0f0;
-    border-radius: 30px;
-    padding: 5px;
+    border-radius: 7px;
+    padding: 1px;
 }
 
 .normal-btn {
-    font-size: 26px;
+    font-size: 6px;
     color: #666666;
-    padding: 10px 30px;
+    padding: 2px 7px;
 }
 
 .active-btn {
-    font-size: 26px;
+    font-size: 6px;
     color: #ffffff;
     background-color: #FF7064;
-    border-radius: 25px;
-    padding: 10px 30px;
+    border-radius: 6px;
+    padding: 2px 7px;
 }
 
 .line-chart {
-    width: 750px;
-    height: 350px;
-    align-self: center;
+  width: 208px;
+  height: 83px;
+  align-self: center;
 }
 
 .pie-container {
-    flex-direction: column;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 7px;
+  padding: 7px 5px;
+  min-height: 110px;
+}
+
+.pie-wrapper {
+    flex: 1;
+    justify-content: center;
     align-items: center;
-    margin-bottom: 30px;
-    padding: 30px 20px;
-    min-height: 700px;
 }
 
 .pie-chart {
-  width: 690px;
-  height: 560px;
+  width: 150px;
+  height: 110px;
 }
 
 .pie-stack {
-  width: 690px;
-  height: 560px;
-    position: relative;
-  align-self: center;
+  width: 150px;
+  height: 110px;
+  position: relative;
+}
+
+.pie-legend {
+    width: 70px;
+    flex-direction: column;
+    justify-content: center;
+    padding-left: 15px;
+}
+
+.legend-item {
+    flex-direction: row;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.legend-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 3px;
+    margin-right: 4px;
+}
+
+.legend-text {
+    font-size: 7px;
+    color: #666666;
 }
 
 .pie-center-content {
@@ -549,38 +882,39 @@ export default {
 }
 
 .pie-center-text {
-    font-size: 50px;
-    font-weight: bold;
-    color: #333333;
-    margin-top: -50px;
+  font-size: 10px;
+  font-weight: bold;
+  color: #333333;
+  margin-top: -10px;
 }
 
 /* Rank List Styles - Matching Home Page Vibe */
 .rank-list-container {
     flex-direction: column;
-    padding-top: 20px;
-    padding-left: 20px;
-    padding-right: 20px;
-    overflow: visible;
+    padding-top: 10px;
+    padding-left: 10px;
+    padding-right: 10px;
+    padding-bottom: 20px;
 }
 
 .rank-item {
     flex-direction: row;
     align-items: center;
-    margin-bottom: 40px;
+    margin-bottom: 12px;
 }
 
 .rank-icon-wrapper {
-    width: 90px;
-    height: 90px;
+    width: 25px;
+    height: 25px;
     justify-content: center;
     align-items: center;
-    margin-right: 20px;
+    margin-right: 8px;
+    display: flex;
 }
 
 .rank-icon {
-    width: 90px;
-    height: 90px;
+    width: 20px;
+    height: 20px;
     object-fit: contain;
 }
 
@@ -588,51 +922,71 @@ export default {
     flex: 1;
     flex-direction: column;
     justify-content: center;
-    margin-right: 20px;
 }
 
 .rank-title-row {
     flex-direction: row;
     justify-content: space-between;
-    margin-bottom: 10px;
+    align-items: center;
+    margin-bottom: 4px;
+}
+
+.rank-name-container {
+    display: none;
 }
 
 .rank-name {
-    font-size: 30px;
+    font-size: 8px;
     color: #333333;
     font-weight: bold;
 }
 
+.rank-right-info {
+    display: none;
+}
+
+.rank-amount {
+    font-size: 8px;
+    font-weight: bold;
+    color: #333333;
+}
+
+.progress-bar-bg {
+    width: 100%;
+    height: 3.5px;
+    border-radius: 2px;
+}
+
+.progress-bar-fill {
+    height: 100%;
+    border-radius: 2px;
+}
+/* 
 .rank-percent {
-    font-size: 28px;
+    font-size: 6px;
     color: #333333;
     font-weight: bold;
 }
 
 .progress-bar-bg {
     width: 100%;
-    height: 10px;
+    height: 2px;
     background-color: #f0f0f0;
-    border-radius: 5px;
+    border-radius: 1px;
 }
 
 .progress-bar-fill {
     height: 100%;
-    border-radius: 5px;
+    border-radius: 1px;
 }
 
 .rank-amount-wrapper {
     justify-content: center;
     align-items: center;
-    min-width: 150px;
+    min-width: 35px;
     align-items: flex-end;
 }
-
-.rank-amount {
-    font-size: 32px;
-    font-weight: bold;
-    color: #333333;
-}
+*/
 
 /* Old legend styles removed if not used, or keep for safety */
 .pie-legend {
@@ -644,17 +998,17 @@ export default {
 .card-wrapper {
   width: 100%;
   flex-direction: column;
-  margin-bottom: 30px;
-  height: 360px;
+  margin-bottom: 7px;
+  height: 83px;
   flex-grow: 0;
   flex-shrink: 0;
 }
 
 .card-stack {
-  border-radius: 20px;
+  border-radius: 5px;
   overflow: hidden;
   position: relative;
-  height: 360px;
+  height: 83px;
   flex-grow: 0;
   flex-shrink: 0;
 }
@@ -665,8 +1019,7 @@ export default {
   left: 0;
   right: 0;
   bottom: 0;
-  filter: blur(30px);
-  /* 添加模糊的背景色以产生雾化效果 */
+  filter: blur(7px);
   background-color: rgba(255,255,255,0.3);
 }
 
@@ -683,9 +1036,8 @@ export default {
 .card-content {
   flex-direction: row;
   flex-wrap: wrap;
-  padding: 50px 40px;
+  padding: 12px 9px;
   width: 100%;
-  /* 确保内容在最上层 */
   position: relative;
 }
 
@@ -700,17 +1052,17 @@ export default {
 
 .item-full {
   width: 100%;
-  margin-top: 60px;
+  margin-top: 14px;
 }
 
 .card-label {
-  font-size: 26px;
+  font-size: 6px;
   color: #666666;
-  margin-bottom: 10px;
+  margin-bottom: 2px;
 }
 
 .card-value {
-  font-size: 32px;
+  font-size: 7px;
   font-weight: bold;
 }
 
@@ -724,30 +1076,30 @@ export default {
 
 .balance {
   color: #333333;
-  font-size: 38px;
+  font-size: 9px;
 }
 
 .empty-box {
   flex-direction: column;
   align-items: center;
-  margin-top: 30px;
+  margin-top: 7px;
   background-color: #ffffff;
-  border-top-left-radius: 20px;
-  border-top-right-radius: 20px;
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
   padding-top: 15%;
   width: 100%;
   flex: 1;
 }
 
 .empty-img {
-  width: 450px;
-  height: 450px;
+  width: 104px;
+  height: 104px;
   resize-mode: contain;
 }
 
 .empty-text {
   color: #bbbbbb;
-  font-size: 34px;
-  margin-top: 20px;
+  font-size: 8px;
+  margin-top: 5px;
 }
 </style>

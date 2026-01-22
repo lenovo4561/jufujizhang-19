@@ -350,7 +350,7 @@ export default {
   top: 0;
   left: 0;
   width: 100%;
-  height: 750px;
+  height: 174px;
 }
 
 .bg-img {
@@ -361,56 +361,56 @@ export default {
 
 .header-content {
   flex-direction: column;
-  padding: 0 30px;
-  padding-top: 80px; 
+  padding: 0 7px;
+  padding-top: 19px; 
 }
 
 .date-selector {
   flex-direction: row;
   justify-content: flex-start;
   align-items: center;
-  margin-bottom: 20px;
+  margin-bottom: 5px;
 }
 
 .date-text-wrapper {
     flex-direction: row;
     align-items: center;
-    margin: 0 40px;
+    margin: 0 9px;
 }
 
 .date-text {
-  font-size: 36px;
+  font-size: 8px;
   color: #333333;
   font-weight: bold;
 }
 
 .arrow-small {
-    width: 20px;
-    height: 20px;
-    margin-left: 10px;
+    width: 5px;
+    height: 5px;
+    margin-left: 2px;
     object-fit: contain;
 }
 
 .arrow-icon {
-  width: 50px;
-  height: 50px;
+  width: 12px;
+  height: 12px;
   object-fit: contain;
 }
 
 .calendar-stack {
-  margin-top: 260px;
-  border-radius: 20px;
+  margin-top: 60px;
+  border-radius: 5px;
   overflow: hidden;
-  min-height: 650px;
+  min-height: 150px;
 }
 
 .blur-layer {
   position: absolute;
-  top: -50px;
-  left: -50px;
-  right: -50px;
-  bottom: -50px;
-  filter: blur(30px);
+  top: -12px;
+  left: -12px;
+  right: -12px;
+  bottom: -12px;
+  filter: blur(7px);
 }
 
 .frost-overlay {
@@ -425,20 +425,20 @@ export default {
 .calendar-card {
   flex-direction: column;
   background-color: transparent;
-  border-radius: 20px;
-  padding: 20px 0;
+  border-radius: 5px;
+  padding: 5px 0;
 }
 
 .week-header {
   flex-direction: row;
   justify-content: space-around;
-  margin-bottom: 20px;
+  margin-bottom: 5px;
 }
 
 .week-item {
-  font-size: 28px;
+  font-size: 6px;
   color: #666666;
-  width: 80px;
+  width: 19px;
   text-align: center;
 }
 
@@ -456,14 +456,14 @@ export default {
   flex-direction: column;
   align-items: center;
   justify-content: flex-start;
-  margin-bottom: 80px;
-  height: 110px;
+  margin-bottom: 19px;
+  height: 25px;
 }
 
 .day-content {
-  width: 70px;
-  height: 70px;
-  border-radius: 35px;
+  width: 16px;
+  height: 16px;
+  border-radius: 8px;
   justify-content: center;
   align-items: center;
   flex-direction: column; 
@@ -486,7 +486,7 @@ export default {
 }
 
 .day-num {
-  font-size: 42px;
+  font-size: 10px;
   color: #333333;
   font-weight: bold;
 }
@@ -500,23 +500,23 @@ export default {
 }
 
 .today-text {
-    font-size: 20px;
+    font-size: 5px;
     color: #ffffff;
-    margin-top: -5px;
+    margin-top: -1px;
 }
 .today-tag {
-    font-size: 20px;
+    font-size: 5px;
     color: #ffffff;
 }
 
 .day-indicators {
     flex-direction: column;
     align-items: center;
-    margin-top: 5px;
+    margin-top: 1px;
 }
 
 .indicator {
-    font-size: 18px;
+    font-size: 4px;
 }
 
 .income {
@@ -530,22 +530,22 @@ export default {
 .details-section {
     flex-direction: column;
     background-color: #ffffff;
-    border-top-left-radius: 30px;
-    border-top-right-radius: 30px;
-    margin-top: 30px;
-    padding: 30px;
-    padding-bottom: 230px;
+    border-top-left-radius: 7px;
+    border-top-right-radius: 7px;
+    margin-top: 7px;
+    padding: 7px;
+    padding-bottom: 53px;
 }
 
 .detail-header {
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 50px;
+    margin-bottom: 12px;
 }
 
 .detail-date-title {
-    font-size: 40px;
+    font-size: 9px;
     font-weight: bold;
     color: #000000;
 }
@@ -555,13 +555,13 @@ export default {
 }
 
 .summary-label {
-    font-size: 28px;
+    font-size: 6px;
     color: #666666;
 }
 
 .summary-val {
-    font-size: 28px;
-    margin-left: 10px;
+    font-size: 6px;
+    margin-left: 2px;
     font-weight: bold;
 }
 
@@ -574,42 +574,42 @@ export default {
 }
 
 .space {
-    margin-left: 30px;
+    margin-left: 7px;
 }
 
 .empty-view {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    margin-top: 50px;
+    margin-top: 12px;
 }
 
 .empty-img {
-    width: 300px;
-    height: 300px;
+    width: 69px;
+    height: 69px;
     object-fit: contain;
 }
 
 .empty-text {
-    font-size: 28px;
+    font-size: 6px;
     color: #999999;
-    margin-top: 20px;
+    margin-top: 5px;
 }
 
 .fab-btn {
     position: fixed;
-    bottom: 200px;
-    right: 40px;
-    width: 200px;
-    height: 200px;
+    bottom: 46px;
+    right: 9px;
+    width: 46px;
+    height: 46px;
     border-radius: 50%;
     justify-content: center;
     align-items: center;
 }
 
 .fab-icon {
-    width: 200px;
-    height: 200px;
+    width: 46px;
+    height: 46px;
     object-fit: contain;
 }
 
@@ -620,22 +620,22 @@ export default {
 .record-item {
   flex-direction: row;
   align-items: center;
-  margin-bottom: 40px;
-  padding-bottom: 20px;
+  margin-bottom: 9px;
+  padding-bottom: 5px;
   border-bottom-width: 1px;
   border-bottom-color: #f5f5f5;
 }
 .icon-wrapper {
-  width: 100px;
-  height: 100px;
-  border-radius: 50px;
+  width: 23px;
+  height: 23px;
+  border-radius: 12px;
   justify-content: center;
   align-items: center;
-  margin-right: 20px;
+  margin-right: 5px;
 }
 .item-icon {
-  width: 100px;
-  height: 100px;
+  width: 23px;
+  height: 23px;
   object-fit: contain;
 }
 .item-info {
@@ -644,13 +644,13 @@ export default {
   justify-content: center;
 }
 .item-title {
-  font-size: 32px;
+  font-size: 7px;
   color: #333333;
   font-weight: bold;
-  margin-bottom: 8px;
+  margin-bottom: 2px;
 }
 .item-note {
-  font-size: 24px;
+  font-size: 6px;
   color: #999999;
 }
 .item-amount-wrapper {
@@ -659,7 +659,7 @@ export default {
   justify-content: center;
 }
 .item-amount {
-  font-size: 36px;
+  font-size: 8px;
   font-weight: bold;
 }
 .val-income {

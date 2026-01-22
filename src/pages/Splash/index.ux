@@ -157,24 +157,24 @@ export default {
   position: absolute;
   top: 0;
   left: 0;
-  padding-bottom: 200px;
+  padding-bottom: 46px;
 }
 
 .logo {
-  width: 200px;
-  height: 200px;
-  margin-bottom: 30px;
+  width: 46px;
+  height: 46px;
+  margin-bottom: 7px;
   object-fit: contain;
 }
 
 .app-name-img {
-  width: 220px;
-  height: 60px;
+  width: 51px;
+  height: 14px;
   object-fit: contain;
 }
 
 .app-name {
-  font-size: 36px;
+  font-size: 8px;
   color: #000000;
   font-weight: bold;
 }
@@ -193,29 +193,29 @@ export default {
 }
 
 .modal_content {
-  width: 600px;
+  width: 139px;
   background-color: #ffffff;
-  border-radius: 20px;
-  padding: 40px;
+  border-radius: 5px;
+  padding: 9px;
   flex-direction: column;
   align-items: center;
 }
 
 .modal_title {
-  font-size: 32px;
+  font-size: 7px;
   font-weight: bold;
   color: #333333;
-  margin-bottom: 30px;
+  margin-bottom: 7px;
 }
 
 .modal_text_wrapper {
-  margin-bottom: 40px;
+  margin-bottom: 9px;
 }
 
 .modal_text {
-  font-size: 28px;
+  font-size: 6px;
   color: #666666;
-  line-height: 40px;
+  line-height: 9px;
 }
 
 .link {
@@ -230,32 +230,32 @@ export default {
 
 .btn_primary {
   width: 100%;
-  height: 80px;
+  height: 19px;
   background: linear-gradient(135deg, #fa0101 0%, #d40000 100%);
-  border-radius: 40px;
+  border-radius: 9px;
   justify-content: center;
   align-items: center;
-  margin-bottom: 20px;
+  margin-bottom: 5px;
 }
 
 .btn_text_primary {
   color: #ffffff;
-  font-size: 30px;
+  font-size: 7px;
   font-weight: bold;
 }
 
 .btn_secondary {
   width: 100%;
-  height: 80px;
+  height: 19px;
   background-color: #f5f7fa;
-  border-radius: 40px;
+  border-radius: 9px;
   justify-content: center;
   align-items: center;
 }
 
 .btn_text_secondary {
   color: #fa0101;
-  font-size: 30px;
+  font-size: 7px;
   font-weight: bold;
 }
 </style>

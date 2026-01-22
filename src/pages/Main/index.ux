@@ -104,12 +104,12 @@ export default {
 }
 .tab-bar {
   position: fixed;
-  bottom: 20px;
-  left: 20px;
-  right: 20px;
-  height: 150px;
+  bottom: 5px;
+  left: 5px;
+  right: 5px;
+  height: 35px;
   background-color: #1A1A1A;
-  border-radius: 75px;
+  border-radius: 17px;
   flex-direction: row;
   align-items: center;
   justify-content: space-around;
@@ -125,12 +125,12 @@ export default {
   height: 100%;
 }
 .tab-icon {
-  width: 70px;
-  height: 70px;
+  width: 16px;
+  height: 16px;
   object-fit: contain;
-  margin-bottom: 8px;
+  margin-bottom: 2px;
 }
 .tab-text {
-  font-size: 24px;
+  font-size: 6px;
 }
 </style>
