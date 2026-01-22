@@ -9,12 +9,12 @@
     <div class="header-content">
       <!-- 年月选择 -->
       <div class="date-selector">
-        <image class="arrow-icon" src="/assets/img/zuo.png"></image>
+        <image class="arrow-icon" src="/assets/img/zuo.png" onclick="prevMonth"></image>
         <div class="date-text-wrapper">
-             <text class="date-text">2026-01-28</text>
+             <text class="date-text">{{currentYear}}-{{currentMonth < 10 ? '0' + currentMonth : currentMonth}}</text>
              <image class="arrow-small" src="/assets/img/jiantou.png"></image>
         </div>
-        <image class="arrow-icon" src="/assets/img/you.png"></image>
+        <image class="arrow-icon" src="/assets/img/you.png" onclick="nextMonth"></image>
       </div>
       
       <!-- 日历卡片 -->
@@ -40,9 +40,9 @@
         <div class="days-grid">
            <block for="day in days">
              <div class="day-wrapper" onclick="selectDay(day)">
-                <div class="day-content {{day.isToday ? 'current-day-bg' : ''}} {{day.isSelected ? 'selected-day-bg' : ''}} {{day.isPink ? 'pink-day-bg' : ''}} {{day.isCyan ? 'cyan-day-bg' : ''}}">
-                   <text class="day-num {{day.isToday ? 'white-text' : (day.isSelected ? 'white-text' : 'black-text')}}">{{day.num}}</text>
-                   <text class="today-tag" if="{{day.isToday && !day.isSelected}}">今</text>
+                <div class="day-content {{day.bgClass}}">
+                   <text class="day-num {{day.isToday ? 'white-text' : 'black-text'}}">{{day.num}}</text>
+                   <text class="today-tag" if="{{day.isToday}}">今</text>
                 </div>
                 <!-- 收支数据 -->
                 <div class="day-indicators">
@@ -114,69 +114,55 @@ export default {
   props: ['isActive'],
   data: {
     days: [],
-    currentYear: 2026,
-    currentMonth: 1,
-    selectedDayNum: 28, // Default 
+    currentYear: new Date().getFullYear(),
+    currentMonth: new Date().getMonth() + 1,
+    selectedDayNum: new Date().getDate(), // 默认当天
     dayRecords: [],
     dayIncome: '0.00',
     dayExpense: '0.00'
   },
   onInit() {
     this.generateDays();
+    this.loadMonthData();
     this.loadData();
     this.$watch('isActive', 'onActiveChange')
   },
   onActiveChange(newVal) {
       if (newVal) {
+          this.loadMonthData();
           this.loadData();
       }
   },
   generateDays() {
-    // 模拟2026年1月数据
-    let list = [
-      { num: '', income: '', expense: '' },
-      { num: '', income: '', expense: '' },
-      { num: '', income: '', expense: '' },
-      { num: '', income: '', expense: '' },
-      { num: '1', income: '', expense: '' },
-      { num: '2', income: '', expense: '' },
-      { num: '3', income: '', expense: '' },
-      { num: '4', income: '', expense: '' },
-      { num: '5', income: '88.00', expense: '60.00', isPink: true },
-      { num: '6', income: '', expense: '' },
-      { num: '7', income: '', expense: '' },
-      { num: '8', income: '', expense: '60.00', isCyan: true },
-      { num: '9', income: '', expense: '' },
-      { num: '10', income: '', expense: '' },
-      { num: '11', income: '', expense: '' },
-      { num: '12', income: '', expense: '' },
-      { num: '13', income: '', expense: '' },
-      { num: '14', income: '', expense: '' },
-      { num: '15', income: '', expense: '' },
-      { num: '16', income: '', expense: '' },
-      { num: '17', income: '', expense: '' },
-      { num: '18', income: '', expense: '' },
-      { num: '19', income: '', expense: '' },
-      { num: '20', income: '', expense: '' },
-      { num: '21', income: '', expense: '' },
-      { num: '22', income: '', expense: '' },
-      { num: '23', income: '', expense: '' },
-      { num: '24', income: '', expense: '' },
-      { num: '25', income: '', expense: '' },
-      { num: '26', income: '', expense: '' },
-      { num: '27', income: '', expense: '30.00', isToday: true },
-      { num: '28', income: '', expense: '' },
-      { num: '29', income: '', expense: '' },
-      { num: '30', income: '', expense: '' },
-      { num: '31', income: '', expense: '' },
-    ];
-    // Mark selected
-    list = list.map(day => {
-        if(day.num == this.selectedDayNum) {
-            day.isSelected = true;
-        }
-        return day;
-    });
+    // 获取当前月份的天数
+    const daysInMonth = new Date(this.currentYear, this.currentMonth, 0).getDate();
+    // 获取当月第一天是星期几 (0=周日, 1=周一, ...)
+    const firstDayOfWeek = new Date(this.currentYear, this.currentMonth - 1, 1).getDay();
+    // 获取今天的日期用于标记
+    const today = new Date();
+    const isCurrentMonth = today.getFullYear() === this.currentYear && (today.getMonth() + 1) === this.currentMonth;
+    const todayDate = today.getDate();
+    
+    let list = [];
+    
+    // 添加空白占位，使第一天对齐到正确的星期
+    for (let i = 0; i < firstDayOfWeek; i++) {
+      list.push({ num: '', income: '', expense: '' });
+    }
+    
+    // 添加当月所有日期
+    for (let day = 1; day <= daysInMonth; day++) {
+      const dayObj = { 
+        num: day.toString(), 
+        income: '', 
+        expense: '',
+        isToday: isCurrentMonth && day === todayDate,
+        isSelected: day === this.selectedDayNum,
+        bgClass: (isCurrentMonth && day === todayDate) ? 'current-day-bg' : ''
+      };
+      list.push(dayObj);
+    }
+    
     this.days = list;
   },
   selectDay(day) {
@@ -205,104 +191,111 @@ export default {
   goToJizhang() {
       this.$dispatch('changeTab', { index: 1 })
   },
-  loadData() {
-      // 模拟假数据用于展示效果
-      this.dayRecords = [
-          {
-              type: 'expense',
-              category: '购物',
-              categoryIcon: '/assets/zhihcu_icon/riyongpin2.png',
-              amount: 166.66,
-              note: '无',
-              date: new Date().getTime(),
-              dateStr: '2026-01-28'
-          },
-          {
-              type: 'income',
-              category: '兼职',
-              categoryIcon: '/assets/shouru_icon/jianzhi.png',
-              amount: 166.66,
-              note: '无',
-              date: new Date().getTime() - 1000,
-              dateStr: '2026-01-28'
-          },
-                    {
-              type: 'expense',
-              category: '购物',
-              categoryIcon: '/assets/zhihcu_icon/riyongpin2.png',
-              amount: 166.66,
-              note: '无',
-              date: new Date().getTime(),
-              dateStr: '2026-01-28'
-          },
-          {
-              type: 'income',
-              category: '兼职',
-              categoryIcon: '/assets/shouru_icon/jianzhi.png',
-              amount: 166.66,
-              note: '无',
-              date: new Date().getTime() - 1000,
-              dateStr: '2026-01-28'
-          },
-                    {
-              type: 'expense',
-              category: '购物',
-              categoryIcon: '/assets/zhihcu_icon/riyongpin2.png',
-              amount: 166.66,
-              note: '无',
-              date: new Date().getTime(),
-              dateStr: '2026-01-28'
-          },
-          {
-              type: 'income',
-              category: '兼职',
-              categoryIcon: '/assets/shouru_icon/jianzhi.png',
-              amount: 166.66,
-              note: '无',
-              date: new Date().getTime() - 1000,
-              dateStr: '2026-01-28'
-          },
-                    {
-              type: 'expense',
-              category: '购物',
-              categoryIcon: '/assets/zhihcu_icon/riyongpin2.png',
-              amount: 166.66,
-              note: '无',
-              date: new Date().getTime(),
-              dateStr: '2026-01-28'
-          },
-          {
-              type: 'income',
-              category: '兼职',
-              categoryIcon: '/assets/shouru_icon/jianzhi.png',
-              amount: 166.66,
-              note: '无',
-              date: new Date().getTime() - 1000,
-              dateStr: '2026-01-28'
-          },
-                    {
-              type: 'expense',
-              category: '购物',
-              categoryIcon: '/assets/zhihcu_icon/riyongpin2.png',
-              amount: 166.66,
-              note: '无',
-              date: new Date().getTime(),
-              dateStr: '2026-01-28'
-          },
-          {
-              type: 'income',
-              category: '兼职',
-              categoryIcon: '/assets/shouru_icon/jianzhi.png',
-              amount: 166.66,
-              note: '无',
-              date: new Date().getTime() - 1000,
-              dateStr: '2026-01-28'
+  prevMonth() {
+    if (this.currentMonth === 1) {
+      this.currentYear--;
+      this.currentMonth = 12;
+    } else {
+      this.currentMonth--;
+    }
+    // 切换月份后不自动选中任何日期
+    this.selectedDayNum = 0;
+    this.generateDays();
+    this.loadMonthData();
+    this.loadData();
+  },
+  nextMonth() {
+    if (this.currentMonth === 12) {
+      this.currentYear++;
+      this.currentMonth = 1;
+    } else {
+      this.currentMonth++;
+    }
+    // 切换月份后不自动选中任何日期
+    this.selectedDayNum = 0;
+    this.generateDays();
+    this.loadMonthData();
+    this.loadData();
+  },
+  loadMonthData() {
+    // 加载当月所有记录，更新日历显示
+    storage.get({
+      key: 'accounting_records',
+      success: (data) => {
+        let allRecords = [];
+        if (data) {
+          try {
+            allRecords = JSON.parse(data);
+          } catch (e) {
+            console.error('Json parse error', e);
           }
-      ];
-      this.dayIncome = '166.66';
-      this.dayExpense = '166.66';
+        }
+        
+        const monthStr = this.currentMonth < 10 ? '0' + this.currentMonth : '' + this.currentMonth;
+        const yearMonthPrefix = `${this.currentYear}-${monthStr}`;
+        
+        // 过滤当月记录
+        const monthRecords = allRecords.filter(r => r.dateStr && r.dateStr.startsWith(yearMonthPrefix));
+        
+        // 统计每天的收支情况
+        const dayStats = {};
+        monthRecords.forEach(r => {
+          const day = parseInt(r.dateStr.split('-')[2]);
+          if (!dayStats[day]) {
+            dayStats[day] = { income: 0, expense: 0 };
+          }
+          if (r.type === 'income') {
+            dayStats[day].income += r.amount;
+          } else if (r.type === 'expense') {
+            dayStats[day].expense += r.amount;
+          }
+        });
+        
+        // 更新日历显示
+        this.days = this.days.map(day => {
+          if (day.num) {
+            const dayNum = parseInt(day.num);
+            const stats = dayStats[dayNum];
+            if (stats) {
+              // 设置收支金额用于显示
+              day.income = stats.income > 0 ? stats.income.toFixed(2) : '';
+              day.expense = stats.expense > 0 ? stats.expense.toFixed(2) : '';
 
-      /* 暂不读取真实数据
+              // 背景色逻辑
+              if (day.isToday) {
+                  day.bgClass = 'current-day-bg';
+              } else if (stats.income > 0 && stats.expense > 0) {
+                  day.bgClass = 'pink-day-bg';
+              } else if (stats.expense > 0) {
+                  day.bgClass = 'pink-day-bg';
+              } else if (stats.income > 0) {
+                  day.bgClass = 'cyan-day-bg';
+              } else {
+                  day.bgClass = '';
+              }
+            } else {
+              day.income = '';
+              day.expense = '';
+              day.bgClass = day.isToday ? 'current-day-bg' : '';
+            }
+          }
+          return day;
+        });
+      },
+      fail: () => {
+        console.log('No data found');
+      }
+    });
+  },
+
+  loadData() {
+      if (!this.selectedDayNum) {
+          this.dayRecords = [];
+          this.dayIncome = '0.00';
+          this.dayExpense = '0.00';
+          return;
+      }
+      
       storage.get({
           key: 'accounting_records',
           success: (data) => {
@@ -320,7 +313,7 @@ export default {
               const targetDateStr = `${this.currentYear}-${monthStr}-${dayStr}`;
 
               const filtered = allRecords.filter(r => r.dateStr === targetDateStr);
-              this.dayRecords = filtered.reverse(); // Newest first
+              this.dayRecords = filtered.reverse();
 
               let inc = 0;
               let exp = 0;
@@ -341,7 +334,6 @@ export default {
               this.dayExpense = '0.00';
           }
       })
-      */
   }
 }
 </script>
@@ -375,7 +367,7 @@ export default {
 
 .date-selector {
   flex-direction: row;
-  justify-content: space-between;
+  justify-content: flex-start;
   align-items: center;
   margin-bottom: 20px;
 }
@@ -383,6 +375,7 @@ export default {
 .date-text-wrapper {
     flex-direction: row;
     align-items: center;
+    margin: 0 40px;
 }
 
 .date-text {
@@ -399,8 +392,8 @@ export default {
 }
 
 .arrow-icon {
-  width: 30px;
-  height: 30px;
+  width: 50px;
+  height: 50px;
   object-fit: contain;
 }
 
@@ -473,7 +466,6 @@ export default {
   border-radius: 35px;
   justify-content: center;
   align-items: center;
-  background-color: transparent;
   flex-direction: column; 
 }
 
@@ -528,11 +520,11 @@ export default {
 }
 
 .income {
-    color: #ff5050;
+    color: #00bfa5;
 }
 
 .expense {
-    color: #33d1b1;
+    color: #ff5050;
 }
 
 .details-section {

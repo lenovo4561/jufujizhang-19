@@ -1,19 +1,20 @@
 <template>
-  <div class="page">
-    <div class="header">
-      <image class="header-bg" src="../../assets/img/shouyedingbg-1.png" resize-mode="cover"></image>
-      <div class="date-select">
-        <div class="arrow-box">
-          <text class="arrow">〈</text>
-        </div>
-        <text class="date-text">{{currentDate}}</text>
-         <div class="arrow-box">
-          <text class="arrow">〉</text>
+  <list class="page">
+    <list-item type="main-scroll">
+      <div class="col-wrapper">
+      <div class="header">
+        <image class="header-bg" src="../../assets/img/shouyedingbg-1.png" resize-mode="cover"></image>
+        <div class="date-select">
+          <image class="arrow-icon" src="../../assets/img/zuo.png" onclick="prevMonth"></image>
+          <div class="date-text-wrapper">
+            <text class="date-text">{{currentDate}}</text>
+            <image class="arrow-small" src="../../assets/img/jiantou.png"></image>
+          </div>
+          <image class="arrow-icon" src="../../assets/img/you.png" onclick="nextMonth"></image>
         </div>
       </div>
-    </div>
     
-    <div class="content">
+      <div class="content">
       <div class="card-wrapper">
         <div class="card-stack">
           <!-- 模糊背景层 -->
@@ -99,7 +100,9 @@
           </div>
       </div>
     </div>
-  </div>
+    </div>
+    </list-item>
+  </list>
 </template>
 
 <script>
@@ -108,6 +111,7 @@ import router from '@system.router'
 import Charts from 'apex-ui/components/charts/qacharts.js'
 
 export default {
+  props: ['isActive'],
   data: {
     currentDate: '2026-01',
     hasData: false,
@@ -121,6 +125,12 @@ export default {
   },
   onInit() {
     this.refreshData();
+    this.$watch('isActive', 'onActiveChange')
+  },
+  onActiveChange(newVal) {
+      if (newVal) {
+          this.refreshData();
+      }
   },
   refreshData() {
       // Called by parent or self
@@ -134,49 +144,14 @@ export default {
                   } catch(e) {}
               }
               
-              if (records.length === 0) {
-                  records = this.generateMockData();
-              }
-              
               this.processData(records);
           },
           fail: () => {
-              const records = this.generateMockData();
-              this.processData(records);
+              this.processData([]);
           }
       })
   },
-  generateMockData() {
-      const records = [];
-      const datePrefix = '2026-01-';
-      
-      // Mock Expenses
-      records.push({ type: 'expense', category: '聚会宴请', amount: 1080.00, dateStr: datePrefix + '25' });
-      records.push({ type: 'expense', category: '日常三餐', amount: 500.00, dateStr: datePrefix + '15' });
-      records.push({ type: 'expense', category: '服饰鞋包', amount: 320.00, dateStr: datePrefix + '05' });
-      records.push({ type: 'expense', category: '休闲娱乐', amount: 200.00, dateStr: datePrefix + '10' });
-      records.push({ type: 'expense', category: '图书文具', amount: 150.00, dateStr: datePrefix + '20' });
-      
-      // Random daily expenses for trend chart
-      for(let i=1; i<=30; i++) {
-        const day = i < 10 ? '0'+i : i;
-        if (Math.random() > 0.5) {
-             records.push({ 
-                type: 'expense', 
-                category: '其他', 
-                amount: Math.floor(Math.random() * 200) + 50, 
-                dateStr: datePrefix + day 
-            });
-        }
-      }
 
-      // Mock Income
-      records.push({ type: 'income', category: '工资', amount: 12000.00, dateStr: datePrefix + '10' });
-      records.push({ type: 'income', category: '兼职', amount: 5000.00, dateStr: datePrefix + '20' });
-      records.push({ type: 'income', category: '理财', amount: 1377.28, dateStr: datePrefix + '28' });
-
-      return records;
-  },
   processData(records) {
     if (!records || records.length === 0) {
       this.hasData = false
@@ -207,22 +182,18 @@ export default {
     this.allMonthRecords = filtered
 
     // Trend Chart Data
-    const daysInMonth = new Date(2026, 1, 0).getDate() // Jan 2026 has 31 days
+    const [year, month] = this.currentDate.split('-').map(Number)
+    const daysInMonth = new Date(year, month, 0).getDate()
     const categories = []
     const values = []
     for (let i = 1; i <= daysInMonth; i++) {
-      // Mocking daily aggregation
+      categories.push(`${i < 10 ? '0' + i : i}`)
       let dayStr = `${this.currentDate}-${i < 10 ? '0' + i : i}`
       let val = filtered
         .filter((r) => r.dateStr === dayStr && r.type === this.chartType)
         .reduce((sum, r) => sum + r.amount, 0)
 
-      // Downsample for smoother line if needed, or just push key points
-      // For simplicity, just push 5-6 points distributed
-      if (i % 5 === 0 || i === 1 || i === daysInMonth) {
-        categories.push(`${i < 10 ? '0' + i : i}`)
-        values.push(val)
-      }
+      values.push(val)
     }
 
     setTimeout(() => {
@@ -234,6 +205,7 @@ export default {
     if (!this.$element('lineChart')) return
     const element = this.$element('lineChart')
     const chartColor = this.chartType === 'expense' ? '#FF7064' : '#4CAF50'
+    const chartName = this.chartType === 'expense' ? '支出' : '收入'
 
     new Charts({
       element: element,
@@ -264,6 +236,7 @@ export default {
           type: 'line',
           data: values,
           smooth: true,
+          name: chartName,
           lineStyle: {
             lineWidth: 3,
             color: chartColor
@@ -293,6 +266,7 @@ export default {
     let total = 0
 
     data.forEach((r) => {
+      if (!r.category) return; // 跳过没有category的记录
       if (!map[r.category]) {
         map[r.category] = {
           amount: 0,
@@ -320,12 +294,14 @@ export default {
       color: colors[idx % colors.length]
     }))
 
-     // Prepare data for Pie Chart
-    const pieData = this.rankingList.map(item => ({
+     // Prepare data for Pie Chart - 只包含有效的数据
+    const pieData = this.rankingList
+      .filter(item => item.category && item.percent > 0)
+      .map(item => ({
         value: parseFloat(item.percent),
         name: item.category,
         itemStyle: { color: item.color }
-    }));
+      }));
 
     setTimeout(() => {
       if (!this.$element('pieChart')) return
@@ -334,22 +310,22 @@ export default {
       new Charts({
           element: element,
           width: 690,
-          height: 400,
+          height: 560,
           series: [{
               type: 'pie',
-              center: ['50%', '45%'],
-              radius: ['38%', '60%'],
+              center: ['50%', '50%'],
+              radius: ['30%', '50%'],
               data: pieData,
               avoidLabelOverlap: true,
               label: { 
                 show: true,
-                fontSize: 26,
+                fontSize: 24,
                 formatter: '{b}\n{c}%'
               },
               labelLine: { 
                 show: true,
-                length: 12,
-                length2: 8
+                length: 15,
+                length2: 10
               }
           }]
       });
@@ -358,18 +334,18 @@ export default {
   switchChart(type) {
       this.chartType = type;
       // Only update trend chart
-      const daysInMonth = new Date(2026, 1, 0).getDate()
+      const [year, month] = this.currentDate.split('-').map(Number)
+      const daysInMonth = new Date(year, month, 0).getDate()
       const categories = []
       const values = []
       for (let i = 1; i <= daysInMonth; i++) {
+        categories.push(`${i < 10 ? '0' + i : i}`)
         let dayStr = `${this.currentDate}-${i < 10 ? '0' + i : i}`
         let val = this.allMonthRecords
           .filter((r) => r.dateStr === dayStr && r.type === this.chartType)
           .reduce((sum, r) => sum + r.amount, 0)
-        if (i % 5 === 0 || i === 1 || i === daysInMonth) {
-          categories.push(`${i < 10 ? '0' + i : i}`)
-          values.push(val)
-        }
+        
+        values.push(val)
       }
       setTimeout(() => {
         this.drawTrendChart(categories, values)
@@ -379,6 +355,36 @@ export default {
       this.rankType = type;
       // Only update ranking chart, no need to refresh all data
       this.calculateRanking(this.allMonthRecords);
+  },
+  prevMonth() {
+    const [year, month] = this.currentDate.split('-').map(Number);
+    let newYear = year;
+    let newMonth = month;
+    
+    if (newMonth === 1) {
+      newYear--;
+      newMonth = 12;
+    } else {
+      newMonth--;
+    }
+    
+    this.currentDate = `${newYear}-${newMonth < 10 ? '0' + newMonth : newMonth}`;
+    this.refreshData();
+  },
+  nextMonth() {
+    const [year, month] = this.currentDate.split('-').map(Number);
+    let newYear = year;
+    let newMonth = month;
+    
+    if (newMonth === 12) {
+      newYear++;
+      newMonth = 1;
+    } else {
+      newMonth++;
+    }
+    
+    this.currentDate = `${newYear}-${newMonth < 10 ? '0' + newMonth : newMonth}`;
+    this.refreshData();
   }
 }
 </script>
@@ -396,6 +402,10 @@ export default {
   flex-direction: column;
 }
 
+.col-wrapper {
+    flex-direction: column;
+}
+
 .header-bg {
   width: 100%;
   resize-mode: auto;
@@ -407,35 +417,46 @@ export default {
   left: 30px;
   flex-direction: row;
   align-items: center;
+  justify-content: flex-start;
 }
 
-.arrow-box {
-  padding: 10px;
+.date-text-wrapper {
+  flex-direction: row;
+  align-items: center;
+  margin: 0 40px;
 }
 
-.arrow {
-  font-size: 30px;
-  color: #333333;
-  font-weight: bold;
+.arrow-icon {
+  width: 50px;
+  height: 50px;
+  object-fit: contain;
+}
+
+.arrow-small {
+  width: 20px;
+  height: 20px;
+  margin-left: 10px;
+  object-fit: contain;
 }
 
 .date-text {
-  font-size: 34px;
+  font-size: 36px;
   font-weight: bold;
   color: #333333;
-  margin: 0 15px;
 }
 
 .content {
   flex-direction: column;
   padding: 0 30px;
-  margin-top: -420px; /* 向上移动更多以叠加到背景上 */
-  flex: 1;
+  margin-top: -450px; /* 向上移动更多以叠加到背景上 */
+  width: 100%;
+  position: relative;
+  z-index: 10;
 }
 
 .charts-container {
     flex-direction: column;
-    padding-bottom: 50px;
+    padding-bottom: 200px;
 }
 
 .chart-section {
@@ -447,7 +468,7 @@ export default {
 }
 
 .trend-section {
-  height: 520px;
+  height: 530px;
   flex-grow: 0;
   flex-shrink: 0;
 }
@@ -501,18 +522,17 @@ export default {
     align-items: center;
     margin-bottom: 30px;
     padding: 30px 20px;
-  height: 580px;
-  justify-content: center;
+    min-height: 700px;
 }
 
 .pie-chart {
   width: 690px;
-  height: 440px;
+  height: 560px;
 }
 
 .pie-stack {
   width: 690px;
-  height: 440px;
+  height: 560px;
     position: relative;
   align-self: center;
 }
@@ -533,7 +553,6 @@ export default {
     font-weight: bold;
     color: #333333;
     margin-top: -50px;
-    margin-left: -60px;
 }
 
 /* Rank List Styles - Matching Home Page Vibe */
@@ -542,6 +561,7 @@ export default {
     padding-top: 20px;
     padding-left: 20px;
     padding-right: 20px;
+    overflow: visible;
 }
 
 .rank-item {
@@ -553,16 +573,14 @@ export default {
 .rank-icon-wrapper {
     width: 90px;
     height: 90px;
-    border-radius: 45px;
-    background-color: #f7f7f7;
     justify-content: center;
     align-items: center;
     margin-right: 20px;
 }
 
 .rank-icon {
-    width: 50px;
-    height: 50px;
+    width: 90px;
+    height: 90px;
     object-fit: contain;
 }
 

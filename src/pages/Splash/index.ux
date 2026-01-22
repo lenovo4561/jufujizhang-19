@@ -5,7 +5,8 @@
     
     <!-- Logo容器 -->
     <div class="logo-container">
-      <image class="logo" src="/assets/img/logo_.png"></image>
+      <image class="logo" src="/assets/img/loading-icon-1.png"></image>
+      <image class="app-name-img" src="/assets/img/jfjz.png"></image>
     </div>
 
     <!-- 隐私协议弹窗 -->
@@ -160,9 +161,15 @@ export default {
 }
 
 .logo {
-  width: 250px;
-  height: 250px;
-  margin-bottom: 40px;
+  width: 200px;
+  height: 200px;
+  margin-bottom: 30px;
+  object-fit: contain;
+}
+
+.app-name-img {
+  width: 220px;
+  height: 60px;
   object-fit: contain;
 }
 

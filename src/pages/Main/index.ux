@@ -9,7 +9,7 @@
       <tab-content class="tab-content">
         <shouye-page id="shouye-page" is-active="{{currentIndex === 0}}"></shouye-page>
         <jizhang-page id="jizhang-page"></jizhang-page>
-        <tongji-page id="tongji-page"></tongji-page>
+        <tongji-page id="tongji-page" is-active="{{currentIndex === 2}}"></tongji-page>
         <mine-page id="mine-page"></mine-page>
       </tab-content>
     </tabs>
