@@ -1,12 +1,15 @@
 <template>
   <div class="shouye-page">
-    <!-- 顶部背景 -->
-    <div class="bg-container">
-       <image class="bg-img" src="/pkg_main/assets/img/shouyedingbg.png"></image>
-    </div>
-
-    <!-- 头部内容区 -->
-    <div class="header-content">
+  <list class="shouye-list">
+    <!-- 头部内容区（包含背景） -->
+    <list-item type="header-content" class="header-item">
+      <div class="header-wrapper">
+        <!-- 顶部背景 -->
+        <div class="bg-container">
+           <image class="bg-img" src="/pkg_main/assets/img/shouyedingbg.png"></image>
+        </div>
+        
+        <div class="header-content">
       <!-- 年月选择 -->
       <div class="date-selector">
         <image class="arrow-icon" src="/pkg_main/assets/img/zuo.png" onclick="prevMonth"></image>
@@ -55,9 +58,12 @@
         </div>
       </div>
     </div>
+    </div>
+    </list-item>
 
     <!-- 底部详情区 -->
-    <div class="details-section">
+    <list-item type="details-section" class="details-item">
+      <div class="details-section">
        <div class="detail-header">
          <text class="detail-date-title">{{currentMonth < 10 ? '0' + currentMonth : currentMonth}}.{{selectedDayNum < 10 ? '0' + selectedDayNum : selectedDayNum}}</text>
          <div class="detail-summary">
@@ -74,7 +80,8 @@
              <div class="record-item" onclick="toDetail($item)">
                  <!-- Icon -->
                  <div class="icon-wrapper">
-                    <image class="item-icon" src="{{$item.categoryIcon || '/pkg_main/assets/zhihcu_icon/qitaxiaofei2.png'}}"></image>
+                    <image class="item-icon" src="{{$item.categoryIcon}}" if="{{$item.categoryIcon}}"></image>
+                    <image class="item-icon" src="/pkg_main/assets/zhihcu_icon/qitaxiaofei2.png" else></image>
                  </div>
                  <!-- Middle -->
                  <div class="item-info">
@@ -97,13 +104,16 @@
           <text class="empty-text">当前暂无数据~</text>
        </div>
     </div>
-    
+    </list-item>
+
+    </list>
+
     <!-- 悬浮按钮 -->
     <div class="fab-btn" if="{{isActive}}" onclick="goToJizhang">
-       <image class="fab-icon" src="/pkg_main/assets/img/jizhang.png"></image> 
+      <image class="fab-icon" src="/pkg_main/assets/img/jizhang.png"></image>
     </div>
 
-  </div>
+    </div>
 </template>
 
 <script>
@@ -313,7 +323,15 @@ export default {
               const targetDateStr = `${this.currentYear}-${monthStr}-${dayStr}`;
 
               const filtered = allRecords.filter(r => r.dateStr === targetDateStr);
-              this.dayRecords = filtered.reverse();
+              
+              // 确保每条记录都有 categoryIcon
+              this.dayRecords = filtered.map(r => {
+                  if (!r.categoryIcon) {
+                      console.warn('Record missing categoryIcon:', r.category);
+                      r.categoryIcon = '/pkg_main/assets/zhihcu_icon/qitaxiaofei2.png';
+                  }
+                  return r;
+              }).reverse();
 
               let inc = 0;
               let exp = 0;
@@ -345,10 +363,30 @@ export default {
   height: 100%;
 }
 
+.shouye-list {
+  flex: 1;
+}
+
+.header-item,
+.details-item {
+  flex-direction: column;
+}
+.details-item{
+  margin-top: 10px;
+}
+.header-item {
+  min-height: 240px;
+  overflow: visible;
+}
+
+.header-wrapper {
+  position: relative;
+  flex-direction: column;
+  min-height: 240px;
+  overflow: visible;
+}
+
 .bg-container {
-  position: absolute;
-  top: 0;
-  left: 0;
   width: 100%;
   height: 174px;
 }
@@ -362,7 +400,11 @@ export default {
 .header-content {
   flex-direction: column;
   padding: 0 7px;
-  padding-top: 19px; 
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  padding-top: 19px;
 }
 
 .date-selector {
@@ -370,18 +412,23 @@ export default {
   justify-content: flex-start;
   align-items: center;
   margin-bottom: 5px;
+  min-height: 16px;
 }
 
 .date-text-wrapper {
     flex-direction: row;
     align-items: center;
     margin: 0 9px;
+    min-width: 46px;
+    justify-content: center;
 }
 
 .date-text {
   font-size: 8px;
   color: #333333;
   font-weight: bold;
+  lines: 1;
+  text-align: center;
 }
 
 .arrow-small {
@@ -398,10 +445,11 @@ export default {
 }
 
 .calendar-stack {
-  margin-top: 60px;
+  margin-top: 45px;
   border-radius: 5px;
-  overflow: hidden;
-  min-height: 150px;
+  overflow: visible;
+  min-height: 180px;
+  position: relative;
 }
 
 .blur-layer {
@@ -427,12 +475,14 @@ export default {
   background-color: transparent;
   border-radius: 5px;
   padding: 5px 0;
+  padding-bottom: 3px;
+  min-height: 180px;
 }
 
 .week-header {
   flex-direction: row;
   justify-content: space-around;
-  margin-bottom: 5px;
+  margin-bottom: 2px;
 }
 
 .week-item {
@@ -456,8 +506,8 @@ export default {
   flex-direction: column;
   align-items: center;
   justify-content: flex-start;
-  margin-bottom: 19px;
-  height: 25px;
+  margin-bottom: 3px;
+  min-height: 23px;
 }
 
 .day-content {
@@ -534,7 +584,7 @@ export default {
     border-top-right-radius: 7px;
     margin-top: 7px;
     padding: 7px;
-    padding-bottom: 53px;
+    padding-bottom: 80px;
 }
 
 .detail-header {
@@ -605,6 +655,7 @@ export default {
     border-radius: 50%;
     justify-content: center;
     align-items: center;
+    z-index: 1000;
 }
 
 .fab-icon {
