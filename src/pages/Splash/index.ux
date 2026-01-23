@@ -196,29 +196,30 @@ export default {
 }
 
 .modal_content {
-  width: 139px;
+  width: 200px;
   background-color: #ffffff;
-  border-radius: 5px;
-  padding: 9px;
+  border-radius: 6px;
+  padding: 14px 12px;
   flex-direction: column;
   align-items: center;
 }
 
 .modal_title {
-  font-size: 7px;
+  font-size: 14px;
   font-weight: bold;
   color: #333333;
-  margin-bottom: 7px;
+  margin-bottom: 10px;
 }
 
 .modal_text_wrapper {
-  margin-bottom: 9px;
+  margin-bottom: 12px;
+  padding: 0;
 }
 
 .modal_text {
-  font-size: 6px;
+  font-size: 10px;
   color: #666666;
-  line-height: 9px;
+  line-height: 16px;
 }
 
 .link {
@@ -233,32 +234,32 @@ export default {
 
 .btn_primary {
   width: 100%;
-  height: 19px;
+  height: 32px;
   background: linear-gradient(135deg, #fa0101 0%, #d40000 100%);
-  border-radius: 9px;
+  border-radius: 16px;
   justify-content: center;
   align-items: center;
-  margin-bottom: 5px;
+  margin-bottom: 8px;
 }
 
 .btn_text_primary {
   color: #ffffff;
-  font-size: 7px;
+  font-size: 12px;
   font-weight: bold;
 }
 
 .btn_secondary {
   width: 100%;
-  height: 19px;
+  height: 32px;
   background-color: #f5f7fa;
-  border-radius: 9px;
+  border-radius: 16px;
   justify-content: center;
   align-items: center;
 }
 
 .btn_text_secondary {
   color: #fa0101;
-  font-size: 7px;
+  font-size: 12px;
   font-weight: bold;
 }
 </style>

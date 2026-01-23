@@ -132,9 +132,16 @@ export default {
           }
         }
 
-        // Filter out the record by matching timestamp
+        // Filter out the record by matching multiple fields to ensure accuracy
         const newList = list.filter(r => {
-          return r.date !== this.record.date
+          // Match all key fields to identify the exact record
+          return !(
+            r.date === this.record.date &&
+            r.category === this.record.category &&
+            r.amount === this.record.amount &&
+            r.type === this.record.type &&
+            r.note === this.record.note
+          )
         })
 
         console.info(
